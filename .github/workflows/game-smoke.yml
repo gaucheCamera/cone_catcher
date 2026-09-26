@@ -1,0 +1,20 @@
+name: Game smoke test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  game-smoke:
+    name: Game smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v6
+      - run: pnpm install --frozen-lockfile
+      - run: node node_modules/playwright/cli.js install --with-deps msedge
+      - run: pnpm test
