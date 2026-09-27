@@ -1,0 +1,11 @@
+{
+  "name": "cone-catcher",
+  "private": true,
+  "packageManager": "pnpm@11.19.0",
+  "scripts": {
+    "test": "node --test tests/game-smoke.test.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}
