@@ -70,7 +70,10 @@ Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md, and docs/features/02-characte
   for implementation commit 4c4da9c on 2026-10-03. Current branch checks are on PR #3.
 - Local visual review: both skins use the shared game renderer in the preview;
   startup overlay inspected at 1280x800 and 390x844. Original hare-ear drawing is unchanged.
-- Owner phone test: pending. Flick both ways, try vertical scrolling, start with
+- Owner phone preview: on 2026-10-03 the owner confirmed the game displays and can
+  be played in Firefox on Android through the local diagnostic preview. See F00's
+  evidence for the network troubleshooting; this is not a deployed Pages check.
+- Owner acceptance tests: still pending. Flick both ways, try vertical scrolling, start with
   each skin, pause/resume, reset, and confirm the selector neither moves the player
   nor starts a run. Check prompt taps after flicks work once; long presses select
   no text. See README for candidate preview instructions.

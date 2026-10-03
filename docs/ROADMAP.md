@@ -90,6 +90,9 @@ merged or deployed. [Draft PR #3](https://github.com/gaucheCamera/cone_catcher/p
 contains both features. Local checks and GitHub Game smoke test passed for the
 implementation commit; both plans link the evidence and track phone/deployment
 verification separately. Current branch checks are visible on that PR.
+The owner confirmed that the candidate displays and can be played in Firefox on
+an Android phone using the local diagnostic preview. The complete F00/F02 phone
+acceptance checklist remains pending; this confirmation is not deployment evidence.
 Other features remain planned / awaiting detailed design approval.
 
 | ID | Feature and prompt | Dependencies / recommended sequencing |

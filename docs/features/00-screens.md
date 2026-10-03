@@ -101,7 +101,17 @@ Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md, and docs/features/00-screens.
 - GitHub feature check: [Game smoke test passed](https://github.com/gaucheCamera/cone_catcher/actions/runs/37149726718)
   for implementation commit 4c4da9c on 2026-10-03. Subsequent documentation updates
   run the same required check; its current result is visible on PR #3.
-- Owner phone test: pending. Use the candidate preview instructions in README.
+- Owner phone preview: on 2026-10-03 the owner confirmed the candidate displays
+  and can be played in Firefox on Android. The phone's diagnostic request identified
+  Firefox 156 on Android 12 and reported Game ready without a JavaScript error.
+  Initial Wi-Fi access timed out while Windows blocked Node on the Public profile;
+  the owner changed the network/firewall settings. A subsequent blank-page report
+  cleared using a temporary diagnostic preview with uncached responses; the exact
+  cause of that blank page is not established. No gameplay code changed during this
+  troubleshooting. The temporary diagnostic strip is not part of the shipped game.
+- Owner acceptance tests: still pending for settings, pause/resume with held input,
+  all reset routes, long presses, and game-over flow. Phone access alone does not
+  mark these checks passed. Use the checklist in README.
 - Deployed Pages check: pending authorized merge/deployment.
 - Amendments: owner selected F00 first and approved including F02 in the same PR.
   Settings and selected skin persist through reset; podium is deferred until F08.
