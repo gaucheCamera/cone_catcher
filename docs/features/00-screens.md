@@ -1,6 +1,6 @@
 # F00: Screens, settings, pause and reset
 
-Status: awaiting-phone-test. Implementation PR: being prepared on feature/f00-screens.
+Status: awaiting-phone-test. Implementation PR: [#3](https://github.com/gaucheCamera/cone_catcher/pull/3).
 Dependencies: F02's two-skin carousel is delivered together with this screen flow,
 as approved by the owner on 2026-10-03.
 
@@ -86,7 +86,8 @@ Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md, and docs/features/00-screens.
 
 ## Delivery evidence
 
-- Commit / PR: feature/f00-screens, combined F00/F02 implementation; PR being prepared.
+- Commit / PR: implementation 4c4da9c9f070f5dd9008ad66763ffd935b58a2e2,
+  [draft PR #3](https://github.com/gaucheCamera/cone_catcher/pull/3), combined F00/F02.
 - Automated checks: pnpm test passed on 2026-10-03, covering script parsing,
   setup/settings frozen time, setting validation, one loop on repeated Start,
   selection locking, pause/resume, clearing held movement, reset from playing/
@@ -97,6 +98,9 @@ Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md, and docs/features/00-screens.
   below the playfield; corner targets are visible and at least 44px tall.
 - GitHub baseline: Game smoke test and Pages deployment succeeded on assessed main.
   Active Protect main ruleset requires PRs and Game smoke test; see WORKFLOW.md.
+- GitHub feature check: [Game smoke test passed](https://github.com/gaucheCamera/cone_catcher/actions/runs/37149726718)
+  for implementation commit 4c4da9c on 2026-10-03. Subsequent documentation updates
+  run the same required check; its current result is visible on PR #3.
 - Owner phone test: pending. Use the candidate preview instructions in README.
 - Deployed Pages check: pending authorized merge/deployment.
 - Amendments: owner selected F00 first and approved including F02 in the same PR.

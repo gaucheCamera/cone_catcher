@@ -86,13 +86,16 @@ an end condition; only skilled players will see the whole sequence.
 
 F00 and F02 are implemented together in the candidate feature/f00-screens branch,
 as approved by the owner on 2026-10-03, and await real-phone testing. They are not
-merged or deployed. Their plans record local test evidence; PR checks are pending.
+merged or deployed. [Draft PR #3](https://github.com/gaucheCamera/cone_catcher/pull/3)
+contains both features. Local checks and GitHub Game smoke test passed for the
+implementation commit; both plans link the evidence and track phone/deployment
+verification separately. Current branch checks are visible on that PR.
 Other features remain planned / awaiting detailed design approval.
 
 | ID | Feature and prompt | Dependencies / recommended sequencing |
 | --- | --- | --- |
-| F00 | [Screens, settings, pause and reset](features/00-screens.md) | Awaiting phone test; combined with F02; PR being prepared |
-| F02 | [Two skins and carousel](features/02-characters.md) | Awaiting phone test; integrated with F00 in the same PR |
+| F00 | [Screens, settings, pause and reset](features/00-screens.md) | Awaiting phone test; combined with F02 in PR #3 |
+| F02 | [Two skins and carousel](features/02-characters.md) | Awaiting phone test; integrated with F00 in PR #3 |
 | F01 | [Squirrel motion and colours](features/01-squirrels.md) | Planned; follows the F00/F02 delivery |
 | F03 | [Mushrooms and distraction](features/03-mushrooms.md) | F00; season hook used later by F07 |
 | F04 | [Portrait ground controls and jumping](features/04-controls.md) | F00, F02, F03 for real mushroom-clearance tests |
