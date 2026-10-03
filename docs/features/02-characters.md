@@ -1,7 +1,7 @@
 # F02: Two skins and compact character selection
 
-Status: planned / awaiting detailed design review. Implementation PR: none.
-Dependencies: F00 can integrate this carousel into the complete screen flow.
+Status: ready-for-review. Implementation PR: [#3](https://github.com/gaucheCamera/cone_catcher/pull/3).
+Dependencies: integrated with F00 in the same PR, as approved on 2026-10-03.
 
 ## Intended behavior and decisions
 
@@ -10,7 +10,18 @@ two choices. Show one selected character at a time with previous/next arrows and
 horizontal flick navigation in an overlay at startup.
 Each skin retains its own size and associated hitbox; do not normalize both
 characters to the same collision dimensions. Selection is locked during play.
-Proposed: wrap between two choices; retain the last choice when resetting.
+Approved on 2026-10-03: wrap between the two choices; retain the last choice when
+resetting. Settings navigation also retains the selection.
+
+Implemented: Jack and Cristian keep their internal IDs and appear as Character 1
+and Character 2. Susanna and Lucy were removed. The startup overlay shows one
+preview using the actual player renderer, with previous/next arrows, keyboard
+left/right navigation when the selector is focused, and horizontal flick selection.
+Flicks require at least 35px horizontally and 1.5 times the vertical displacement;
+vertical gestures do not change selection. Phone gesture feel awaits owner testing.
+Selection is locked outside setup. Jack remains 17x52 and Cristian 16x47 in game
+coordinates. Body collisions use each skin's width and height; the 26x12 basket
+keeps its original height-relative position. No collision rebalancing was applied.
 
 ## Implementation steps
 
@@ -48,8 +59,24 @@ Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md, and docs/features/02-characte
 
 ## Delivery evidence
 
-- Commit / PR: not started.
-- Automated checks: not run for this feature.
-- Owner phone test: pending implementation.
+- Commit / PR: implementation 4c4da9c9f070f5dd9008ad66763ffd935b58a2e2,
+  [PR #3](https://github.com/gaucheCamera/cone_catcher/pull/3), combined F00/F02.
+- Automated checks: pnpm test passed on 2026-10-03 at desktop and phone sizes.
+  Checks cover two-choice wrapping by arrows and keyboard, horizontal mouse and
+  simulated touch flicks, ignoring vertical gestures, touch taps after a flick,
+  selection retention and locking, distinct body height/width edges, and actual
+  catches/misses at each skin's basket edge. git diff --check passed.
+- GitHub feature check: [Game smoke test passed](https://github.com/gaucheCamera/cone_catcher/actions/runs/37149726718)
+  for implementation commit 4c4da9c on 2026-10-03. Current branch checks are on PR #3.
+- Local visual review: both skins use the shared game renderer in the preview;
+  startup overlay inspected at 1280x800 and 390x844. Original hare-ear drawing is unchanged.
+- Owner phone preview: on 2026-10-03 the owner confirmed the game displays and can
+  be played in Firefox on Android through the local diagnostic preview. See F00's
+  evidence for the network troubleshooting; this is not a deployed Pages check.
+- Owner acceptance: on 2026-10-03, after phone testing, the owner confirmed
+  satisfaction with character selection and the F00/F02 screen controls and
+  approved marking PR #3 ready for review. Individual manual steps were not
+  separately logged; the checklist remains in README for future regression tests.
+  No merge authorization was given.
 - Deployed Pages check: pending authorized merge/deployment.
-- Amendments: update here when a decision or implementation detail changes.
+- Amendments: owner approved F02 together with F00, including wrapping and retention.

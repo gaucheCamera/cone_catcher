@@ -17,26 +17,31 @@ proposed change and seek owner agreement. Do not execute the entire roadmap at o
 
 ## Repository assessment
 
-- Assessed remote main: 28d8279e840a0c04259fc6439e9581c3301a3218, merging
-  [PR #1](https://github.com/gaucheCamera/cone_catcher/pull/1).
+- Assessed remote main: 18654891cca17d7b83db9fddf139946905b3deda, merging
+  [PR #2](https://github.com/gaucheCamera/cone_catcher/pull/2), the roadmap documentation.
+  No open PRs were returned during the F00 assessment on 2026-10-03.
 - The game is plain HTML/CSS/JavaScript in index.html, with canvas-drawn artwork.
   Rendering, settings, simulation, input, and state transitions share one script.
-- Four characters exist. Keep Jack and Cristian as Character 1 and Character 2.
+- Four characters exist on assessed main. The F00/F02 candidate keeps Jack and
+  Cristian as Character 1 and Character 2 and removes Susanna and Lucy.
   They have different dimensions; the owner explicitly requires skin-specific hitboxes.
 - Squirrels currently move vertically with side changes; the palette includes grey/black.
 - Hawks remove squirrels. Population-based hawks are a balancing mechanism.
 - Difficulty currently changes throw intervals, cone gravity, and targeting with
   elapsed time; tree recruitment also increases pressure. Tuning must address all.
-- The current caught counter includes hares as well as cones. New run records must
-  separate cones collected and hares saved without accidentally changing scoring.
+- Code review corrected the earlier assessment: caught counts cones only;
+  hare rescues are not separately counted. Future run records must add a separate
+  hares-saved statistic without accidentally changing scoring.
 - Current score is survival points plus catch points and an additional hare bonus.
 - Restart currently starts immediately. Settings use a details element.
 - There is no persistent ranking, custom preset library, mushroom, jump, or season system.
-- pnpm test passed both checks during assessment. GitHub smoke and Pages deployment
-  also passed on assessed main. A deployed gameplay session was not verified here.
-- Local checkout initially remained on the merged hare branch; origin/main was
-  refreshed before this documentation branch. Local main itself was not rewritten.
-- Main was reported unprotected. Required-check enforcement is still pending.
+- pnpm test passed both checks during the F00 assessment at desktop (1280x800)
+  and phone (390x844) widths under /cone_catcher/. GitHub smoke and Pages deployment
+  passed on assessed main. A deployed gameplay session was not verified here.
+- The F00 session began on the clean, merged documentation branch. origin/main
+  was fetched and feature/f00-screens was created from it; local main was not rewritten.
+- Main protection is now verified: the active Protect main ruleset requires PRs
+  and the Game smoke test with an up-to-date branch. See WORKFLOW.md for details.
 - The unpublished refactoring branch was not inspected or reused.
 
 ## Agreed product decisions
@@ -79,14 +84,23 @@ an end condition; only skilled players will see the whole sequence.
 
 ## Feature plans and status
 
-All features below are planned / awaiting detailed design approval; none is
-implemented by this documentation change. PR and test evidence: not yet applicable.
+F00 and F02 are implemented together in the candidate feature/f00-screens branch,
+as approved by the owner on 2026-10-03, and are ready for review after owner phone
+feedback. They are not merged or deployed. [PR #3](https://github.com/gaucheCamera/cone_catcher/pull/3)
+contains both features. Local checks and GitHub Game smoke test passed for the
+implementation commit; both plans link the evidence and track phone/deployment
+verification separately. Current branch checks are visible on that PR.
+The owner confirmed that the candidate displays and can be played in Firefox on
+an Android phone using the local diagnostic preview, then confirmed satisfaction
+with character selection, settings, pause/resume, long presses, and reset and
+approved marking the PR ready for review. This is not deployment or merge authorization.
+Other features remain planned / awaiting detailed design approval.
 
 | ID | Feature and prompt | Dependencies / recommended sequencing |
 | --- | --- | --- |
-| F01 | [Squirrel motion and colours](features/01-squirrels.md) | First gameplay change |
-| F02 | [Two skins and carousel](features/02-characters.md) | Can follow F01 |
-| F00 | [Screens, settings, pause and reset](features/00-screens.md) | Before new settings-heavy features; integrates F02 |
+| F00 | [Screens, settings, pause and reset](features/00-screens.md) | Ready for review; combined with F02 in PR #3 |
+| F02 | [Two skins and carousel](features/02-characters.md) | Ready for review; integrated with F00 in PR #3 |
+| F01 | [Squirrel motion and colours](features/01-squirrels.md) | Planned; follows the F00/F02 delivery |
 | F03 | [Mushrooms and distraction](features/03-mushrooms.md) | F00; season hook used later by F07 |
 | F04 | [Portrait ground controls and jumping](features/04-controls.md) | F00, F02, F03 for real mushroom-clearance tests |
 | F05 | [Difficulty pacing and hawk balance](features/05-pacing.md) | Before F06; preserve existing game rules |
@@ -111,10 +125,12 @@ added later but precedes controls/settings work. Agree any change in implementat
   Display names are not unique identities; never merge two people just by matching names.
 - Approve a host for global scores. See [the global plan](features/09-global-podium.md).
   Cloudflare Worker + D1 is recommended, not provisioned or approved yet.
-- Configure required GitHub checks before feature merging.
+- Explicit owner merge instruction for F00/F02. Scope, behavior, and phone
+  feedback are approved; required GitHub checks are verified.
 
 ## Immediate next step
 
-Review the documentation PR and the proposed leaderboard architecture. Then confirm
-F01 movement feel and its proposed tuning, implement only that agreed feature, run
-the existing checks plus relevant tests, and provide a PR and real-phone test.
+Review the combined F00/F02 PR, now approved by the owner after phone testing.
+Merge only on explicit owner instruction and passing required checks. Then verify
+the deployed /cone_catcher/ game separately.
+F01 remains a future design/implementation step.

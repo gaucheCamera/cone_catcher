@@ -1,6 +1,6 @@
 # Development and verification workflow
 
-Status: approved by the owner on 2026-10-03. GitHub enforcement remains pending.
+Status: approved by the owner on 2026-10-03. GitHub enforcement verified on 2026-10-03.
 
 ## Before work
 
@@ -16,6 +16,8 @@ Status: approved by the owner on 2026-10-03. GitHub enforcement remains pending.
 
 - Install the locked dependencies: `pnpm install --frozen-lockfile`.
 - Run the existing checks: `pnpm test`.
+- Preview the candidate locally: `pnpm preview`, then open
+  http://127.0.0.1:4173/cone_catcher/. See README for phone preview instructions.
 - Edge is required locally. CI installs it with
   `node node_modules/playwright/cli.js install --with-deps msedge`.
 
@@ -27,15 +29,20 @@ is required by this plan.
 
 ## Approved baseline
 
-The existing Game smoke test job runs on PRs and pushes to main. It checks script
-parsing and starts, pauses, and resumes the game at 1280x800 and 390x844 under the
-/cone_catcher/ prefix, checking browser errors and horizontal overflow.
+The existing Game smoke test job runs on PRs and pushes to main. The F00/F02
+candidate extends it to check script parsing, screen transitions, frozen time,
+clean reset/restart input, character navigation/locking, touch activation, and
+skin collision edges at 1280x800 and 390x844 under /cone_catcher/. It also checks
+browser errors, horizontal overflow, and movement control visibility. Test-only
+rule access is inserted by the fixture and is not shipped in index.html. The
+fixture uses the same HTTP server as pnpm preview.
 
 Make this one check required for PRs into main, with changes entering via PR.
-On 2026-10-03 the GitHub branch endpoint reported main as unprotected. This
-documentation PR does not change GitHub settings. Verify and configure the rule
-before the first gameplay merge under this workflow. Do not require a second
-reviewer account in a solo-owner project; the owner's review is still expected.
+The initial assessment reported main as unprotected. The F00 assessment on
+2026-10-03 verified the active [Protect main ruleset](https://github.com/gaucheCamera/cone_catcher/rules/24427686):
+PRs are required, Game smoke test must pass with the branch up to date, and deletion
+and force pushes are blocked. No bypass actors or mandatory approving reviewer
+accounts are configured. The owner's gameplay review is still expected.
 
 Extend the existing suite only where behavior changes justify it:
 - Browser flow: setup, settings, pause/resume, reset, game over, and podium.
