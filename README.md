@@ -2,6 +2,15 @@
 
 The game is a single `index.html` page served by GitHub Pages at `/cone_catcher/`.
 
+## Roadmap and contributing
+
+Start with [the roadmap and current status](docs/ROADMAP.md), which links to a
+separate implementation plan and agent prompt for each proposed feature.
+[AGENTS.md](AGENTS.md) records project constraints, and
+[the workflow](docs/WORKFLOW.md) records the agreed checks and review process.
+These documents distinguish approved behavior, open design choices, and delivered
+work. Update them with the relevant implementation PR and verification evidence.
+
 ## Development checks
 
 Install dependencies with `pnpm install --frozen-lockfile`, then run `pnpm test`.
