@@ -223,8 +223,8 @@ const squirrelPalette=[
   {body:'#8e392b',dark:'#54281f'}
 ];
 // Owner-approved movement defaults; deliberately kept out of player settings.
-const squirrelMotion={speed:40,stepMin:12,stepMax:24,pauseMin:.3,pauseMax:.9,
-  journeySpeed:18,journeyMin:60,journeyMax:120,scamperMin:1,scamperMax:2};
+const squirrelMotion={speed:50,stepMin:14,stepMax:28,pauseMin:.3,pauseMax:.9,
+  approachSpeed:40,journeySpeed:18,journeyMin:60,journeyMax:120,scamperMin:1,scamperMax:2};
 const squirrelDirections=[[1,0],[-1,0],[0,1],[0,-1],
   [Math.SQRT1_2,Math.SQRT1_2],[-Math.SQRT1_2,Math.SQRT1_2],
   [Math.SQRT1_2,-Math.SQRT1_2],[-Math.SQRT1_2,-Math.SQRT1_2]];
@@ -317,17 +317,19 @@ function squirrelRouteFits(s,x,y){
   return samples.every(fraction=>Math.abs(lerp(s.x,x,fraction))<=sWidth(s,lerp(s.y,y,fraction))+1e-8);
 }
 function pickSquirrelDestination(s){
-  const b=sBounds(s);
+  const b=sBounds(s),horizontalScale=1+clamp((s.y-b.min)/(b.max-b.min),0,1);
   for(let attempt=0;attempt<8;attempt++){
     const [dx,dy]=squirrelDirections[Math.floor(Math.random()*squirrelDirections.length)],
       distance=rand(squirrelMotion.stepMin,squirrelMotion.stepMax),
       y=clamp(s.y+dy*distance,b.min,b.max),half=sWidth(s,y),
-      x=clamp(s.x+dx*distance,-half,half),length=Math.hypot(x-s.x,y-s.y);
-    if(length<1||length>squirrelMotion.stepMax)continue;
+      x=clamp(s.x+dx*distance*horizontalScale,-half,half),length=Math.hypot(x-s.x,y-s.y),
+      plannedLength=Math.hypot(dx*distance*horizontalScale,dy*distance);
+    // Horizontal scampers widen linearly toward the base, up to twice the top range.
+    if(length<1||length>plannedLength+1e-8)continue;
     // Reject routes through narrow branch gaps instead of snapping across the trunk.
     if(!squirrelRouteFits(s,x,y))continue;
     s.targetX=x;s.targetY=y;s.traveling=true;s.mode='scamper';
-    if(Math.abs(x-s.x)>.01)s.facing=Math.sign(x-s.x);
+    if(x!==s.x)s.facing=Math.sign(x-s.x);
     return;
   }
   s.rest=rand(squirrelMotion.pauseMin,squirrelMotion.pauseMax);
@@ -342,7 +344,7 @@ function pickSquirrelJourney(s){
   }
   // Approach the trunk before travelling vertically through narrow branch gaps.
   s.targetX=0;s.targetY=s.y;s.mode='approach';s.traveling=true;
-  if(Math.abs(s.x)>.01)s.facing=Math.sign(-s.x);
+  if(s.x!==0)s.facing=Math.sign(-s.x);
   if(s.x===0){s.targetY=s.journeyY;s.mode='journey'}
 }
 function moveSquirrel(s,dt){
@@ -358,7 +360,8 @@ function moveSquirrel(s,dt){
     if(s.scamperWait<=0)pickSquirrelDestination(s);
   }
   const dx=s.targetX-s.x,dy=s.targetY-s.y,length=Math.hypot(dx,dy),
-    speed=s.mode==='journey'?squirrelMotion.journeySpeed:squirrelMotion.speed,
+    speed=s.mode==='journey'?squirrelMotion.journeySpeed:
+      s.mode==='approach'?squirrelMotion.approachSpeed:squirrelMotion.speed,
     travel=Math.min(length,speed*dt);
   if(length>0){s.x+=dx/length*travel;s.y+=dy/length*travel}
   if(travel>=length){

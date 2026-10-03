@@ -42,7 +42,8 @@ F01 phone test before merge: play for one minute, restarting if needed. Observe
 short horizontal, vertical and diagonal squirrel scampers with pauses, brown/red
 fur, and left/right facing changes. Slow climbing should be broken up frequently
 by scampers and cover more of the tree. Check they stay in their own foliage without
-sudden trunk jumps, and that the motion feels comfortable. Pause/resume to check
+sudden jumps, with wider horizontal steps near the base and constrained steps near
+the top. Check that the motion feels comfortable. Pause/resume to check
 movement freezes, then reset and start again. Squirrel movement has no Settings controls.
 
 Install dependencies with `pnpm install --frozen-lockfile`, then run `pnpm test`.

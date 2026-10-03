@@ -60,10 +60,14 @@ proposed change and seek owner agreement. Do not execute the entire roadmap at o
   temporarily. No mushrooms in winter.
 - Squirrels move erratically within their own tree and look left/right independently
   of their throw targeting. Their fur is brown through red, not grey/black.
-  F01 defaults approved: 12–24px bursts at 40px/second, 0.3–0.9-second pauses.
+  Initial F01 defaults were 12–24px bursts at 40px/second. After phone feedback,
+  the owner requested faster/longer scampers: current tuning is 14–28px at
+  50px/second, with 0.3–0.9-second pauses.
   After phone feedback, combine climbing toward a height 60–120px away at
   18px/second with scampers interrupting each 1–2 seconds of climbing, retaining
   the height goal afterward. Approach the trunk at 40px/second before climbing legs.
+  Horizontal scamper distance scales linearly from 1x at the top to 2x at the base,
+  within foliage bounds, following further owner phone feedback.
   The owner explicitly excluded squirrel movement from Settings.
 - Slower difficulty progression. Easy should make reaching seasons realistic;
   Medium is harder; Hard is exceptionally difficult. Actual balance needs playtesting.
@@ -98,7 +102,9 @@ record handset and deployed evidence separately.
 F01's first candidate passed local checks and the owner phone preview worked,
 but the owner found its movement range too small/repetitive. Alternating complete
 vertical journeys then felt too long. The owner selected combined climbing with
-frequent scamper interruptions; this revision passes locally and awaits phone acceptance.
+frequent scamper interruptions and found that version "pretty good". The requested
+final adjustments widen horizontal movement toward the base while constraining
+the top, and increase scamper speed/distance. They pass locally and await final phone acceptance.
 Local automated and visual checks passed; [PR #4](https://github.com/gaucheCamera/cone_catcher/pull/4)
 contains the candidate, and GitHub Game smoke test passed on its implementation
 commit. Other features remain planned / awaiting detailed design approval.

@@ -257,9 +257,11 @@ test('game loads and runs from the GitHub Pages path at desktop and phone widths
               }
               check(s.y>=b.min-1e-8&&s.y<=b.max+1e-8,'squirrel stays within vertical canopy limits');
               check(Math.abs(s.x)<=motion.width(s,s.y)+1e-8,'squirrel stays within its own canopy width');
-              check(Math.hypot(dx,dy)<=40*dt+1e-8,'movement remains continuous and speed limited');
+              check(Math.hypot(dx,dy)<=50*dt+1e-8,'movement remains continuous and speed limited');
               if(before.traveling&&before.mode==='journey'&&s.mode==='journey')
                 check(Math.hypot(dx,dy)<=18*dt+1e-8,'climbing between scampers uses the slower speed');
+              if(before.traveling&&before.mode==='approach')
+                check(Math.hypot(dx,dy)<=40*dt+1e-8,'trunk approaches retain their own speed');
               if(s.traveling){
                 check(s.targetY>=b.min&&s.targetY<=b.max,'destination stays within vertical bounds');
                 check(Math.abs(s.targetX)<=motion.width(s,s.targetY)+1e-8,'destination stays within canopy width');
@@ -275,6 +277,20 @@ test('game loads and runs from the GitHub Pages path at desktop and phone widths
           }
           check(horizontal&&vertical&&diagonal,'motion includes horizontal, vertical and diagonal bursts');
           check(left&&right,'squirrels look both ways');
+
+          Math.random=()=>0;
+          const rangeProbe=motion.make(0),rangeBounds=motion.bounds(rangeProbe),ranges=[];
+          for(const height of [0,.5,1]){
+            rangeProbe.x=0;rangeProbe.y=rangeBounds.min+(rangeBounds.max-rangeBounds.min)*height;
+            rangeProbe.traveling=false;motion.destination(rangeProbe);
+            ranges.push(rangeProbe.targetX);
+          }
+          check(ranges[0]<=14&&ranges[1]<=21&&Math.abs(ranges[2]-28)<1e-8,
+            'horizontal range grows toward the base, doubling at the bottom within foliage bounds');
+          check(ranges[2]>ranges[0],'bottom scampers are wider than constrained top scampers');
+          motion.move(rangeProbe,.1);
+          check(Math.abs(rangeProbe.x-5)<1e-8,'scampers travel at the requested 50px/second');
+          Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};
 
           const s=motion.make(0);s.timer=Infinity;s.rest=0;motion.destination(s);
           check(s.traveling,'a bounded destination is available');
