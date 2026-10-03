@@ -38,6 +38,14 @@ F00/F02 phone test before merge:
    Confirm the character remains visible above the movement buttons. Also check the
    existing baby-hare ear behavior described below.
 
+F01 phone test before merge: play for one minute, restarting if needed. Observe
+short horizontal, vertical and diagonal squirrel scampers with pauses, brown/red
+fur, and left/right facing changes. Slow climbing should be broken up frequently
+by scampers and cover more of the tree. Check they stay in their own foliage without
+sudden jumps, with wider horizontal steps near the base and constrained steps near
+the top. Check that the motion feels comfortable. Pause/resume to check
+movement freezes, then reset and start again. Squirrel movement has no Settings controls.
+
 Install dependencies with `pnpm install --frozen-lockfile`, then run `pnpm test`.
 The test checks the inline JavaScript and starts the game in Microsoft Edge at
 desktop and phone widths. It serves the page under `/cone_catcher/` to catch
@@ -49,5 +57,5 @@ deployed GitHub Pages game after merge. For the baby hare ear fix, set Baby hare
 to 50%, start a run, let a hare land without catching it, and check that both
 ears remain visible while it runs away. Repeat on a desktop browser and phone.
 
-The repository owner can mark `Game smoke test` as a required status check in
-the `main` branch protection or ruleset settings after its first PR run.
+The active main ruleset requires PRs and a passing `Game smoke test` on an
+up-to-date branch. See docs/WORKFLOW.md for the verified protection details.
