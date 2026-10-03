@@ -1,6 +1,6 @@
 # F02: Two skins and compact character selection
 
-Status: ready-for-review. Implementation PR: [#3](https://github.com/gaucheCamera/cone_catcher/pull/3).
+Status: merged. Implementation PR: [#3](https://github.com/gaucheCamera/cone_catcher/pull/3).
 Dependencies: integrated with F00 in the same PR, as approved on 2026-10-03.
 
 ## Intended behavior and decisions
@@ -77,6 +77,9 @@ Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md, and docs/features/02-characte
   satisfaction with character selection and the F00/F02 screen controls and
   approved marking PR #3 ready for review. Individual manual steps were not
   separately logged; the checklist remains in README for future regression tests.
-  No merge authorization was given.
-- Deployed Pages check: pending authorized merge/deployment.
+  PR #3 subsequently merged on 2026-10-03 as a167f28677e6c1a6e78a226579ff860d9e4a4e49.
+- Deployed Pages check: on 2026-10-03 the published /cone_catcher/ game passed
+  skin selection, settings retention, start, pause/resume, and reset checks at
+  desktop and phone viewport sizes. Pages deployment and Game smoke test passed
+  on merged main. See F00 for exact evidence and the handset/deployment distinction.
 - Amendments: owner approved F02 together with F00, including wrapping and retention.

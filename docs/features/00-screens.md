@@ -1,6 +1,6 @@
 # F00: Screens, settings, pause and reset
 
-Status: ready-for-review. Implementation PR: [#3](https://github.com/gaucheCamera/cone_catcher/pull/3).
+Status: merged. Implementation PR: [#3](https://github.com/gaucheCamera/cone_catcher/pull/3).
 Dependencies: F02's two-skin carousel is delivered together with this screen flow,
 as approved by the owner on 2026-10-03.
 
@@ -113,7 +113,13 @@ Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md, and docs/features/00-screens.
   confirmed satisfaction when asked about character selection, settings,
   pause/resume, long presses, and reset. Approved marking PR #3 ready for review.
   This is owner feedback, separate from the automated evidence above; individual
-  manual test steps were not separately logged. No merge authorization was given.
-- Deployed Pages check: pending authorized merge/deployment.
+  manual test steps were not separately logged. PR #3 subsequently merged on
+  2026-10-03 as a167f28677e6c1a6e78a226579ff860d9e4a4e49.
+- Deployed Pages check: Pages deployment and Game smoke test passed on merged main.
+  On 2026-10-03 the published https://gauchecamera.github.io/cone_catcher/ returned
+  HTTP 200 and passed setup, skin selection, settings/back, running score, pause/
+  resume, and reset checks at 1280x800 and 390x844, with no browser or asset errors.
+  An initial connection reset on the phone-sized navigation cleared on retry.
+  These are checks of the actual deployment; handset feedback above used the local preview.
 - Amendments: owner selected F00 first and approved including F02 in the same PR.
   Settings and selected skin persist through reset; podium is deferred until F08.

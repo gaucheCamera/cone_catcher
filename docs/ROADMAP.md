@@ -17,15 +17,14 @@ proposed change and seek owner agreement. Do not execute the entire roadmap at o
 
 ## Repository assessment
 
-- Assessed remote main: 18654891cca17d7b83db9fddf139946905b3deda, merging
-  [PR #2](https://github.com/gaucheCamera/cone_catcher/pull/2), the roadmap documentation.
-  No open PRs were returned during the F00 assessment on 2026-10-03.
+- Assessed remote main: a167f28677e6c1a6e78a226579ff860d9e4a4e49, merging
+  [PR #3](https://github.com/gaucheCamera/cone_catcher/pull/3), F00/F02.
 - The game is plain HTML/CSS/JavaScript in index.html, with canvas-drawn artwork.
   Rendering, settings, simulation, input, and state transitions share one script.
-- Four characters exist on assessed main. The F00/F02 candidate keeps Jack and
-  Cristian as Character 1 and Character 2 and removes Susanna and Lucy.
+- Two characters exist on main: Jack and Cristian labelled Character 1 and Character 2.
   They have different dimensions; the owner explicitly requires skin-specific hitboxes.
-- Squirrels currently move vertically with side changes; the palette includes grey/black.
+- Main squirrels move vertically with side changes and include grey/black fur.
+  The F01 candidate adds bounded 2D scampers and brown-to-red fur.
 - Hawks remove squirrels. Population-based hawks are a balancing mechanism.
 - Difficulty currently changes throw intervals, cone gravity, and targeting with
   elapsed time; tree recruitment also increases pressure. Tuning must address all.
@@ -33,13 +32,15 @@ proposed change and seek owner agreement. Do not execute the entire roadmap at o
   hare rescues are not separately counted. Future run records must add a separate
   hares-saved statistic without accidentally changing scoring.
 - Current score is survival points plus catch points and an additional hare bonus.
-- Restart currently starts immediately. Settings use a details element.
+- Reset returns to character setup. Settings have a dedicated screen; runs can pause/resume.
 - There is no persistent ranking, custom preset library, mushroom, jump, or season system.
-- pnpm test passed both checks during the F00 assessment at desktop (1280x800)
-  and phone (390x844) widths under /cone_catcher/. GitHub smoke and Pages deployment
-  passed on assessed main. A deployed gameplay session was not verified here.
-- The F00 session began on the clean, merged documentation branch. origin/main
-  was fetched and feature/f00-screens was created from it; local main was not rewritten.
+- pnpm test passes at desktop (1280x800) and phone (390x844) sizes under
+  /cone_catcher/, including F01 rule checks in the candidate. GitHub smoke and
+  Pages deployment passed on assessed main. Actual deployed setup, skin selection,
+  settings/back, start, pause/resume, and reset passed at both sizes on 2026-10-03,
+  without browser/asset errors; an initial mobile connection reset cleared on retry.
+- F01 started on feature/f01-squirrels from fetched origin/main; local main and
+  the earlier local implementation branch were preserved.
 - Main protection is now verified: the active Protect main ruleset requires PRs
   and the Game smoke test with an up-to-date branch. See WORKFLOW.md for details.
 - The unpublished refactoring branch was not inspected or reused.
@@ -59,6 +60,8 @@ proposed change and seek owner agreement. Do not execute the entire roadmap at o
   temporarily. No mushrooms in winter.
 - Squirrels move erratically within their own tree and look left/right independently
   of their throw targeting. Their fur is brown through red, not grey/black.
+  F01 defaults approved: 12–24px bursts at 40px/second, 0.3–0.9-second pauses.
+  The owner explicitly excluded squirrel movement from Settings.
 - Slower difficulty progression. Easy should make reaching seasons realistic;
   Medium is harder; Hard is exceptionally difficult. Actual balance needs playtesting.
 - Seasons default to 60 seconds each. Spring -> summer -> autumn -> winter.
@@ -84,23 +87,20 @@ an end condition; only skilled players will see the whole sequence.
 
 ## Feature plans and status
 
-F00 and F02 are implemented together in the candidate feature/f00-screens branch,
-as approved by the owner on 2026-10-03, and are ready for review after owner phone
-feedback. They are not merged or deployed. [PR #3](https://github.com/gaucheCamera/cone_catcher/pull/3)
-contains both features. Local checks and GitHub Game smoke test passed for the
-implementation commit; both plans link the evidence and track phone/deployment
-verification separately. Current branch checks are visible on that PR.
-The owner confirmed that the candidate displays and can be played in Firefox on
-an Android phone using the local diagnostic preview, then confirmed satisfaction
-with character selection, settings, pause/resume, long presses, and reset and
-approved marking the PR ready for review. This is not deployment or merge authorization.
-Other features remain planned / awaiting detailed design approval.
+F00 and F02 merged together in [PR #3](https://github.com/gaucheCamera/cone_catcher/pull/3).
+The owner confirmed satisfaction using Firefox on an Android phone. Local checks,
+GitHub smoke, Pages deployment, and actual deployed browser flow passed; the plans
+record handset and deployed evidence separately.
+
+F01 behavior and tests are approved, implemented, and awaiting owner phone testing.
+Local automated and visual checks passed; its PR is being prepared. Other features
+remain planned / awaiting detailed design approval.
 
 | ID | Feature and prompt | Dependencies / recommended sequencing |
 | --- | --- | --- |
-| F00 | [Screens, settings, pause and reset](features/00-screens.md) | Ready for review; combined with F02 in PR #3 |
-| F02 | [Two skins and carousel](features/02-characters.md) | Ready for review; integrated with F00 in PR #3 |
-| F01 | [Squirrel motion and colours](features/01-squirrels.md) | Planned; follows the F00/F02 delivery |
+| F00 | [Screens, settings, pause and reset](features/00-screens.md) | Merged and deployment checked; PR #3 |
+| F02 | [Two skins and carousel](features/02-characters.md) | Merged and deployment checked; PR #3 |
+| F01 | [Squirrel motion and colours](features/01-squirrels.md) | Awaiting phone test; PR preparing |
 | F03 | [Mushrooms and distraction](features/03-mushrooms.md) | F00; season hook used later by F07 |
 | F04 | [Portrait ground controls and jumping](features/04-controls.md) | F00, F02, F03 for real mushroom-clearance tests |
 | F05 | [Difficulty pacing and hawk balance](features/05-pacing.md) | Before F06; preserve existing game rules |
@@ -125,12 +125,10 @@ added later but precedes controls/settings work. Agree any change in implementat
   Display names are not unique identities; never merge two people just by matching names.
 - Approve a host for global scores. See [the global plan](features/09-global-podium.md).
   Cloudflare Worker + D1 is recommended, not provisioned or approved yet.
-- Explicit owner merge instruction for F00/F02. Scope, behavior, and phone
-  feedback are approved; required GitHub checks are verified.
+- F01 phone feedback and explicit merge instruction after required GitHub checks pass.
 
 ## Immediate next step
 
-Review the combined F00/F02 PR, now approved by the owner after phone testing.
-Merge only on explicit owner instruction and passing required checks. Then verify
-the deployed /cone_catcher/ game separately.
-F01 remains a future design/implementation step.
+Finish reviewing the F01 PR and obtain the owner's one-minute phone observation.
+Merge only on explicit owner instruction and passing required checks, then verify
+the deployed /cone_catcher/ game separately. See the F01 plan for the exact test.
