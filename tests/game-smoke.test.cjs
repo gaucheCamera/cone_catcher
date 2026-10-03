@@ -254,13 +254,12 @@ test('game loads and runs from the GitHub Pages path at desktop and phone widths
               if(before.traveling&&!s.traveling){
                 if(before.mode==='journey')journeys++;
                 if(before.mode==='scamper')scampers++;
-                check(s.nextJourney===(before.mode==='scamper'),'completed journeys and scampers alternate');
               }
               check(s.y>=b.min-1e-8&&s.y<=b.max+1e-8,'squirrel stays within vertical canopy limits');
               check(Math.abs(s.x)<=motion.width(s,s.y)+1e-8,'squirrel stays within its own canopy width');
               check(Math.hypot(dx,dy)<=40*dt+1e-8,'movement remains continuous and speed limited');
-              if(before.traveling&&before.mode!=='scamper')
-                check(Math.hypot(dx,dy)<=18*dt+1e-8,'vertical journeys and trunk approaches use the slower speed');
+              if(before.traveling&&before.mode==='journey'&&s.mode==='journey')
+                check(Math.hypot(dx,dy)<=18*dt+1e-8,'climbing between scampers uses the slower speed');
               if(s.traveling){
                 check(s.targetY>=b.min&&s.targetY<=b.max,'destination stays within vertical bounds');
                 check(Math.abs(s.targetX)<=motion.width(s,s.targetY)+1e-8,'destination stays within canopy width');
@@ -271,7 +270,7 @@ test('game loads and runs from the GitHub Pages path at desktop and phone widths
               if(dx<-.001){left=true;check(s.facing===-1,'moving left faces left')}
               if(dx>.001){right=true;check(s.facing===1,'moving right faces right')}
             }
-            check(high-low>=100,'alternating journeys explore a wider vertical area');
+            check(high-low>=100,'combined climbing and scampers explore a wider vertical area');
             check(journeys>=3&&scampers>=3,'multiple journeys and scampers complete');
           }
           check(horizontal&&vertical&&diagonal,'motion includes horizontal, vertical and diagonal bursts');
@@ -288,9 +287,21 @@ test('game loads and runs from the GitHub Pages path at desktop and phone widths
           const journeyStart=s.y;motion.journey(s);
           check(Math.abs(s.journeyY-journeyStart)>=60&&Math.abs(s.journeyY-journeyStart)<=120,
             'vertical journey destination is 60–120px away');
-          const journeyEnd=s.journeyY;motion.move(s,10);motion.move(s,10);
-          check(s.x===0&&s.y===journeyEnd&&!s.traveling&&!s.nextJourney,
-            'journey stops at its chosen height and returns to a scamper');
+          const journeyEnd=s.journeyY;s.scamperWait=100;
+          for(let step=0;step<2&&s.traveling;step++)motion.move(s,10);
+          check(s.x===0&&s.y===journeyEnd&&!s.traveling&&s.journeyY===null,
+            'journey stops at its chosen height without overshoot');
+
+          motion.journey(s);s.scamperWait=0;
+          if(s.mode==='approach')motion.move(s,10);
+          const interruptedGoal=s.journeyY;motion.move(s,.01);
+          check(s.mode==='scamper'&&s.journeyY===interruptedGoal,
+            'a short scamper interrupts climbing without changing its goal');
+          motion.move(s,10);
+          check(s.scamperWait>=1&&s.scamperWait<=2,'climbing legs between scampers last 1–2 seconds');
+          motion.move(s,s.rest+.01);
+          check(s.mode!=='scamper'&&s.journeyY===interruptedGoal,
+            'climbing resumes toward the same height after a scamper and rest');
 
           // Tree-relative coordinates follow the tree as the scene's ground changes.
           const tree=motion.trees[0],before=motion.position(s),height=tree.h;

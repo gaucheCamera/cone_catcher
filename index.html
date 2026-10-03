@@ -224,7 +224,7 @@ const squirrelPalette=[
 ];
 // Owner-approved movement defaults; deliberately kept out of player settings.
 const squirrelMotion={speed:40,stepMin:12,stepMax:24,pauseMin:.3,pauseMax:.9,
-  journeySpeed:18,journeyMin:60,journeyMax:120};
+  journeySpeed:18,journeyMin:60,journeyMax:120,scamperMin:1,scamperMax:2};
 const squirrelDirections=[[1,0],[-1,0],[0,1],[0,-1],
   [Math.SQRT1_2,Math.SQRT1_2],[-Math.SQRT1_2,Math.SQRT1_2],
   [Math.SQRT1_2,-Math.SQRT1_2],[-Math.SQRT1_2,-Math.SQRT1_2]];
@@ -280,6 +280,7 @@ function makeTree(x,h,depth=Math.random()){return{x,h,depth,sway:Math.random()*6
 function makeSquirrel(treeIndex){
   const s={tree:treeIndex,x:0,y:0,targetX:0,targetY:0,facing:Math.random()<.5?-1:1,
     traveling:false,mode:'scamper',nextJourney:false,journeyY:null,
+    scamperWait:rand(squirrelMotion.scamperMin,squirrelMotion.scamperMax),
     rest:rand(squirrelMotion.pauseMin,squirrelMotion.pauseMax),
     timer:rand(cfg.throwMin,cfg.throwMax),pause:0,color:squirrelPalette[Math.floor(Math.random()*squirrelPalette.length)]};
   const b=sBounds(s);s.y=rand(b.min,b.max);
@@ -332,14 +333,17 @@ function pickSquirrelDestination(s){
   s.rest=rand(squirrelMotion.pauseMin,squirrelMotion.pauseMax);
 }
 function pickSquirrelJourney(s){
-  const b=sBounds(s),distance=rand(squirrelMotion.journeyMin,squirrelMotion.journeyMax),
-    direction=Math.random()<.5?-1:1;
-  let y=clamp(s.y+direction*distance,b.min,b.max);
-  if(Math.abs(y-s.y)<squirrelMotion.journeyMin)y=clamp(s.y-direction*distance,b.min,b.max);
+  if(s.journeyY===null){
+    const b=sBounds(s),distance=rand(squirrelMotion.journeyMin,squirrelMotion.journeyMax),
+      direction=Math.random()<.5?-1:1;
+    let y=clamp(s.y+direction*distance,b.min,b.max);
+    if(Math.abs(y-s.y)<squirrelMotion.journeyMin)y=clamp(s.y-direction*distance,b.min,b.max);
+    s.journeyY=y;
+  }
   // Approach the trunk before travelling vertically through narrow branch gaps.
-  s.journeyY=y;s.targetX=0;s.targetY=s.y;s.mode='approach';s.traveling=true;
+  s.targetX=0;s.targetY=s.y;s.mode='approach';s.traveling=true;
   if(Math.abs(s.x)>.01)s.facing=Math.sign(-s.x);
-  if(s.x===0){s.targetY=y;s.mode='journey'}
+  if(s.x===0){s.targetY=s.journeyY;s.mode='journey'}
 }
 function moveSquirrel(s,dt){
   if(!s.traveling){
@@ -348,14 +352,21 @@ function moveSquirrel(s,dt){
     if(s.nextJourney)pickSquirrelJourney(s);else pickSquirrelDestination(s);
     if(!s.traveling)return;
   }
+  if(s.mode==='journey'){
+    s.scamperWait-=dt;
+    // A scamper interrupts the climb but retains its height goal for the next leg.
+    if(s.scamperWait<=0)pickSquirrelDestination(s);
+  }
   const dx=s.targetX-s.x,dy=s.targetY-s.y,length=Math.hypot(dx,dy),
-    speed=s.mode==='scamper'?squirrelMotion.speed:squirrelMotion.journeySpeed,
+    speed=s.mode==='journey'?squirrelMotion.journeySpeed:squirrelMotion.speed,
     travel=Math.min(length,speed*dt);
   if(length>0){s.x+=dx/length*travel;s.y+=dy/length*travel}
   if(travel>=length){
     s.x=s.targetX;s.y=s.targetY;
     if(s.mode==='approach'){s.mode='journey';s.targetY=s.journeyY;return}
-    s.traveling=false;s.nextJourney=s.mode==='scamper';s.journeyY=null;
+    s.traveling=false;s.nextJourney=true;
+    if(s.mode==='journey')s.journeyY=null;
+    else s.scamperWait=rand(squirrelMotion.scamperMin,squirrelMotion.scamperMax);
     s.rest=rand(squirrelMotion.pauseMin,squirrelMotion.pauseMax);
   }
 }

@@ -40,8 +40,8 @@ F00/F02 phone test before merge:
 
 F01 phone test before merge: play for one minute, restarting if needed. Observe
 short horizontal, vertical and diagonal squirrel scampers with pauses, brown/red
-fur, and left/right facing changes. Longer slow vertical journeys should alternate
-with the scampers and cover more of the tree. Check they stay in their own foliage without
+fur, and left/right facing changes. Slow climbing should be broken up frequently
+by scampers and cover more of the tree. Check they stay in their own foliage without
 sudden trunk jumps, and that the motion feels comfortable. Pause/resume to check
 movement freezes, then reset and start again. Squirrel movement has no Settings controls.
 
