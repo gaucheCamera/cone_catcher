@@ -66,7 +66,7 @@ proposed change and seek owner agreement. Do not execute the entire roadmap at o
   After phone feedback, combine climbing toward a height 60–120px away at
   18px/second with scampers interrupting each 1–2 seconds of climbing, retaining
   the height goal afterward. Approach the trunk at 40px/second before climbing legs.
-  Horizontal scamper distance scales linearly from 1x at the top to 2x at the base,
+  Horizontal scamper distance scales linearly from 1x at the top to 3x at the base,
   within foliage bounds, following further owner phone feedback.
   The owner explicitly excluded squirrel movement from Settings.
 - Slower difficulty progression. Easy should make reaching seasons realistic;
@@ -104,7 +104,8 @@ but the owner found its movement range too small/repetitive. Alternating complet
 vertical journeys then felt too long. The owner selected combined climbing with
 frequent scamper interruptions and found that version "pretty good". The requested
 final adjustments widen horizontal movement toward the base while constraining
-the top, and increase scamper speed/distance. They pass locally and await final phone acceptance.
+the top, and increase scamper speed/distance. They pass locally; the owner tried
+the final phone preview and confirmed "Ready for review" on 2026-10-03.
 Local automated and visual checks passed; [PR #4](https://github.com/gaucheCamera/cone_catcher/pull/4)
 contains the candidate, and GitHub Game smoke test passed on its implementation
 commit. Other features remain planned / awaiting detailed design approval.
@@ -113,7 +114,7 @@ commit. Other features remain planned / awaiting detailed design approval.
 | --- | --- | --- |
 | F00 | [Screens, settings, pause and reset](features/00-screens.md) | Merged and deployment checked; PR #3 |
 | F02 | [Two skins and carousel](features/02-characters.md) | Merged and deployment checked; PR #3 |
-| F01 | [Squirrel motion and colours](features/01-squirrels.md) | Awaiting phone test of combined movement; PR #4 |
+| F01 | [Squirrel motion and colours](features/01-squirrels.md) | Ready for review after owner phone acceptance; PR #4 |
 | F03 | [Mushrooms and distraction](features/03-mushrooms.md) | F00; season hook used later by F07 |
 | F04 | [Portrait ground controls and jumping](features/04-controls.md) | F00, F02, F03 for real mushroom-clearance tests |
 | F05 | [Difficulty pacing and hawk balance](features/05-pacing.md) | Before F06; preserve existing game rules |
@@ -138,10 +139,10 @@ added later but precedes controls/settings work. Agree any change in implementat
   Display names are not unique identities; never merge two people just by matching names.
 - Approve a host for global scores. See [the global plan](features/09-global-podium.md).
   Cloudflare Worker + D1 is recommended, not provisioned or approved yet.
-- F01 phone feedback and explicit merge instruction after required GitHub checks pass.
+- Explicit F01 merge instruction after required GitHub checks pass; phone feedback is accepted.
 
 ## Immediate next step
 
-Review F01's combined movement revision and repeat the owner's phone observation.
+Review F01's combined movement PR, accepted by the owner after phone playtesting.
 Merge only on explicit owner instruction and passing required checks, then verify
 the deployed /cone_catcher/ game separately. See the F01 plan for the exact test.

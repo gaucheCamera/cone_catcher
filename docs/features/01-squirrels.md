@@ -1,6 +1,6 @@
 # F01: Erratic squirrel movement and colours
 
-Status: awaiting-phone-test (combined movement and wider horizontal range). Implementation PR: [#4](https://github.com/gaucheCamera/cone_catcher/pull/4).
+Status: ready-for-review. Implementation PR: [#4](https://github.com/gaucheCamera/cone_catcher/pull/4).
 Dependencies: follows merged F00/F02 (PR #3); no new gameplay dependency.
 
 ## Intended behavior and decisions
@@ -21,8 +21,8 @@ climbing leg to pass narrow branches. Initial motion is a scamper; reaching a
 height also starts a pause before choosing another goal.
 After the combined preview, the owner requested wider horizontal scampers
 linearly related to height. Multiply the horizontal component by 1 at the top,
-1.5 halfway down, and 2 at the base: nominal 14–28px horizontal steps grow to
-28–56px at the base. Foliage bounds can shorten them; vertical scamper distance
+2 halfway down, and 3 at the base: nominal 14–28px horizontal steps grow to
+42–84px at the base. Foliage bounds can shorten them; vertical scamper distance
 and movement speeds stay unchanged. Diagonal steps use the same horizontal scaling.
 Use a position envelope based on each tree's visible shape, with no teleporting
 across its trunk. Facing follows horizontal travel and remains unchanged during
@@ -54,12 +54,16 @@ vertical travel or the original slow up/down motion interacting with scampers.
 The owner initially selected alternating complete journeys and scampers.
 Second phone observation: those vertical journeys lasted too long. The owner
 then selected combining climbing and scampers instead of shortening complete
-journeys. The combined revision above is implemented; final phone acceptance is pending.
+journeys. The combined revision above implements that choice.
 Third phone observation: combined motion was "pretty good"; the owner requested
 more horizontal range toward the base and constraint toward the top. That final
-range adjustment is implemented, with another phone observation pending.
+range adjustment implements that request.
 The next observation requested faster and slightly longer scampers, resulting in
 the 50px/second, 14–28px tuning above. Slow climbing and trunk approach speeds remain unchanged.
+The owner then requested still wider horizontal scampers; increase the linear
+base multiplier from 2x to 3x while keeping the top at 1x and enforcing foliage bounds.
+Final phone observation on 2026-10-03: the owner confirmed "Ready for review"
+after trying the combined movement, faster/longer scampers and 3x base range.
 
 ## Acceptance criteria and verification
 
@@ -86,14 +90,14 @@ separately after an explicitly authorized merge.
 Copy the following prompt into the implementing agent with this repository open.
 
 ```text
-Review or continue F01 only: bounded erratic 2D squirrel motion and brown-to-red fur. Current owner-directed phone tuning uses 14–28px bursts at 50px/second with 0.3–0.9-second pauses, combined with slow climbing toward a height 60–120px away at 18px/second. Interrupt each 1–2 seconds of climbing with a scamper, retaining the height goal afterward. Smoothly approach the trunk at 40px/second before climbing legs. Scale horizontal scamper distance linearly from 1x near the top to 2x near the base, constrained by foliage. Movement stays out of Settings. Keep facing independent of projectile aiming. Ensure drawing, throw origins, and hawk interception use the same squirrel position. Preserve all other game rules and provide the one-minute phone observation test.
+Review or continue F01 only: bounded erratic 2D squirrel motion and brown-to-red fur. Current owner-directed phone tuning uses 14–28px bursts at 50px/second with 0.3–0.9-second pauses, combined with slow climbing toward a height 60–120px away at 18px/second. Interrupt each 1–2 seconds of climbing with a scamper, retaining the height goal afterward. Smoothly approach the trunk at 40px/second before climbing legs. Scale horizontal scamper distance linearly from 1x near the top to 3x near the base, constrained by foliage. Movement stays out of Settings. Keep facing independent of projectile aiming. Ensure drawing, throw origins, and hawk interception use the same squirrel position. Preserve all other game rules and provide the one-minute phone observation test.
 
 Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md, and docs/features/01-squirrels.md; inspect current main, tests, and open PRs before deciding what remains. Separate agreed requirements from proposed defaults, and resolve only outstanding behavior decisions with the owner before substantial implementation. Work on a focused branch from current main; preserve existing work. Verify the repository-local Git identity and gaucheCamera GitHub account before committing/pushing, without changing global credentials. Do not spawn parallel agents without agreement. Preserve GitHub Pages /cone_catcher/ paths and desktop/portrait-phone play. Use the existing Node test runner and Playwright; run pnpm test and ensure any new tests are actually included by package.json. Add only meaningful behavior/regression tests. Provide a specific real-phone test and let the owner try gameplay before merge. Update this plan and ROADMAP with actual status, PR, test evidence, and limitations; do not mark deployment or phone checks passed without evidence. Open and review a focused PR, wait for its automated checks, fix failures, and stop before merging. Never force-push, publish/reuse the local refactor branch automatically, or implement unrelated roadmap features.
 ```
 
 ## Delivery evidence
 
-- Commit / PR: [#4](https://github.com/gaucheCamera/cone_catcher/pull/4), implementation
+- Commit / PR: [#4](https://github.com/gaucheCamera/cone_catcher/pull/4), first candidate
   d0f19e25e8f5446f6c10e3709bd1d0f7c10ddbea on feature/f01-squirrels,
   based on merged main a167f286. The uploaded tree matches tested local commit
   6e76c37 exactly; the local implementation branch is preserved.
@@ -120,12 +124,16 @@ Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md, and docs/features/01-squirrel
   checks of horizontal ranges at the top, middle and base. Facing follows even
   tiny horizontal movement. An exact speed check verifies 50px/second scampers;
   climbing/trunk approach speed bounds remain covered. Current branch CI is visible on PR #4.
+  [The faster/range-scaled version's GitHub check](https://github.com/gaucheCamera/cone_catcher/actions/runs/37154038656)
+  passed on f604c3682728e842508ab5677291070e77749d3f. The subsequent 3x base-range
+  adjustment passes locally, including clipping at the foliage edge; see PR #4 for current CI.
 - Visual review: actual running game inspected at desktop/phone sizes, and all
   five palette entries inspected enlarged using the game's renderer. No browser errors.
-- Owner phone test: candidates displayed and worked; the initial range was too
-  local, then complete journeys lasted too long. Combined motion was "pretty good";
-  the requested wider horizontal range and faster/longer scampers are awaiting
-  final phone acceptance.
+- Owner phone test: accepted on 2026-10-03. The owner confirmed "Ready for review"
+  after the final preview with combined climbing, 50px/second scampers and 3x
+  horizontal scaling toward the base. Earlier observations shaped the design
+  recorded above. Individual pause/reset steps were not separately logged;
+  automated regression checks cover them and the phone checklist remains available.
 - Deployed Pages check: pending authorized merge/deployment.
 - Amendments: movement excluded from Settings. Owner phone feedback led from
   local scampers to alternating journeys, then combined climbing and scampers

@@ -285,8 +285,8 @@ test('game loads and runs from the GitHub Pages path at desktop and phone widths
             rangeProbe.traveling=false;motion.destination(rangeProbe);
             ranges.push(rangeProbe.targetX);
           }
-          check(ranges[0]<=14&&ranges[1]<=21&&Math.abs(ranges[2]-28)<1e-8,
-            'horizontal range grows toward the base, doubling at the bottom within foliage bounds');
+          check(ranges[0]<=14&&ranges[1]<=28&&ranges[2]>=35&&ranges[2]<=42,
+            'horizontal range grows toward the base, with the wider bottom step clipped by foliage');
           check(ranges[2]>ranges[0],'bottom scampers are wider than constrained top scampers');
           motion.move(rangeProbe,.1);
           check(Math.abs(rangeProbe.x-5)<1e-8,'scampers travel at the requested 50px/second');
