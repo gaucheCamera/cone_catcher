@@ -61,6 +61,7 @@ proposed change and seek owner agreement. Do not execute the entire roadmap at o
 - Squirrels move erratically within their own tree and look left/right independently
   of their throw targeting. Their fur is brown through red, not grey/black.
   F01 defaults approved: 12–24px bursts at 40px/second, 0.3–0.9-second pauses.
+  After phone feedback, alternate with complete 60–120px vertical journeys at 18px/second.
   The owner explicitly excluded squirrel movement from Settings.
 - Slower difficulty progression. Easy should make reaching seasons realistic;
   Medium is harder; Hard is exceptionally difficult. Actual balance needs playtesting.
@@ -92,7 +93,10 @@ The owner confirmed satisfaction using Firefox on an Android phone. Local checks
 GitHub smoke, Pages deployment, and actual deployed browser flow passed; the plans
 record handset and deployed evidence separately.
 
-F01 behavior and tests are approved, implemented, and awaiting owner phone testing.
+F01's first candidate passed local checks and the owner phone preview worked,
+but the owner found its movement range too small/repetitive. The owner approved
+alternating complete longer slow vertical journeys with short scampers. That
+revision is implemented and passes local tests; a second phone observation is pending.
 Local automated and visual checks passed; [PR #4](https://github.com/gaucheCamera/cone_catcher/pull/4)
 contains the candidate, and GitHub Game smoke test passed on its implementation
 commit. Other features remain planned / awaiting detailed design approval.
@@ -101,7 +105,7 @@ commit. Other features remain planned / awaiting detailed design approval.
 | --- | --- | --- |
 | F00 | [Screens, settings, pause and reset](features/00-screens.md) | Merged and deployment checked; PR #3 |
 | F02 | [Two skins and carousel](features/02-characters.md) | Merged and deployment checked; PR #3 |
-| F01 | [Squirrel motion and colours](features/01-squirrels.md) | Awaiting phone test; PR #4 |
+| F01 | [Squirrel motion and colours](features/01-squirrels.md) | In progress: phone feedback revision; PR #4 |
 | F03 | [Mushrooms and distraction](features/03-mushrooms.md) | F00; season hook used later by F07 |
 | F04 | [Portrait ground controls and jumping](features/04-controls.md) | F00, F02, F03 for real mushroom-clearance tests |
 | F05 | [Difficulty pacing and hawk balance](features/05-pacing.md) | Before F06; preserve existing game rules |
@@ -130,6 +134,6 @@ added later but precedes controls/settings work. Agree any change in implementat
 
 ## Immediate next step
 
-Finish reviewing the F01 PR and obtain the owner's one-minute phone observation.
+Review F01's alternating-journey revision and repeat the owner's phone observation.
 Merge only on explicit owner instruction and passing required checks, then verify
 the deployed /cone_catcher/ game separately. See the F01 plan for the exact test.

@@ -23,7 +23,8 @@ test('game loads and runs from the GitHub Pages path at desktop and phone widths
       geometry: () => ({ body: { w: chars[selected].w, h: chars[selected].h }, basket: basketBounds(), playerX, groundY }),
       bodyHit, choose,
       squirrel: { make: makeSquirrel, bounds: sBounds, width: sWidth, position: sPos,
-        destination: pickSquirrelDestination, move: moveSquirrel, update: updateSquirrel,
+        destination: pickSquirrelDestination, journey: pickSquirrelJourney,
+        move: moveSquirrel, update: updateSquirrel,
         draw: drawSquirrel, toss, launchHawk, reset,
         get population() { return squirrels }, get objects() { return objects },
         get trees() { return trees }, get hawk() { return hawk } },
@@ -244,13 +245,22 @@ test('game loads and runs from the GitHub Pages path at desktop and phone widths
           let horizontal=false,vertical=false,diagonal=false,left=false,right=false;
           for(const tree of [0,1,2]){
             const s=motion.make(tree);s.timer=Infinity;
+            let low=s.y,high=s.y,journeys=0,scampers=0;
             for(let step=0;step<1200;step++){
-              const before={x:s.x,y:s.y},dt=[.005,.033,.1,.5][step%4];
+              const before={x:s.x,y:s.y,mode:s.mode,traveling:s.traveling},dt=[.005,.033,.1,.5][step%4];
               motion.update(s,dt);
               const b=motion.bounds(s),dx=s.x-before.x,dy=s.y-before.y;
+              low=Math.min(low,s.y);high=Math.max(high,s.y);
+              if(before.traveling&&!s.traveling){
+                if(before.mode==='journey')journeys++;
+                if(before.mode==='scamper')scampers++;
+                check(s.nextJourney===(before.mode==='scamper'),'completed journeys and scampers alternate');
+              }
               check(s.y>=b.min-1e-8&&s.y<=b.max+1e-8,'squirrel stays within vertical canopy limits');
               check(Math.abs(s.x)<=motion.width(s,s.y)+1e-8,'squirrel stays within its own canopy width');
               check(Math.hypot(dx,dy)<=40*dt+1e-8,'movement remains continuous and speed limited');
+              if(before.traveling&&before.mode!=='scamper')
+                check(Math.hypot(dx,dy)<=18*dt+1e-8,'vertical journeys and trunk approaches use the slower speed');
               if(s.traveling){
                 check(s.targetY>=b.min&&s.targetY<=b.max,'destination stays within vertical bounds');
                 check(Math.abs(s.targetX)<=motion.width(s,s.targetY)+1e-8,'destination stays within canopy width');
@@ -261,6 +271,8 @@ test('game loads and runs from the GitHub Pages path at desktop and phone widths
               if(dx<-.001){left=true;check(s.facing===-1,'moving left faces left')}
               if(dx>.001){right=true;check(s.facing===1,'moving right faces right')}
             }
+            check(high-low>=100,'alternating journeys explore a wider vertical area');
+            check(journeys>=3&&scampers>=3,'multiple journeys and scampers complete');
           }
           check(horizontal&&vertical&&diagonal,'motion includes horizontal, vertical and diagonal bursts');
           check(left&&right,'squirrels look both ways');
@@ -272,6 +284,13 @@ test('game loads and runs from the GitHub Pages path at desktop and phone widths
           check(s.rest>=.3&&s.rest<=.9,'arrival begins an irregular pause');
           const resting={x:s.x,y:s.y};motion.move(s,.05);
           check(s.x===resting.x&&s.y===resting.y,'squirrel remains still during its pause');
+
+          const journeyStart=s.y;motion.journey(s);
+          check(Math.abs(s.journeyY-journeyStart)>=60&&Math.abs(s.journeyY-journeyStart)<=120,
+            'vertical journey destination is 60–120px away');
+          const journeyEnd=s.journeyY;motion.move(s,10);motion.move(s,10);
+          check(s.x===0&&s.y===journeyEnd&&!s.traveling&&!s.nextJourney,
+            'journey stops at its chosen height and returns to a scamper');
 
           // Tree-relative coordinates follow the tree as the scene's ground changes.
           const tree=motion.trees[0],before=motion.position(s),height=tree.h;
