@@ -85,20 +85,21 @@ an end condition; only skilled players will see the whole sequence.
 ## Feature plans and status
 
 F00 and F02 are implemented together in the candidate feature/f00-screens branch,
-as approved by the owner on 2026-10-03, and await real-phone testing. They are not
-merged or deployed. [Draft PR #3](https://github.com/gaucheCamera/cone_catcher/pull/3)
+as approved by the owner on 2026-10-03, and are ready for review after owner phone
+feedback. They are not merged or deployed. [PR #3](https://github.com/gaucheCamera/cone_catcher/pull/3)
 contains both features. Local checks and GitHub Game smoke test passed for the
 implementation commit; both plans link the evidence and track phone/deployment
 verification separately. Current branch checks are visible on that PR.
 The owner confirmed that the candidate displays and can be played in Firefox on
-an Android phone using the local diagnostic preview. The complete F00/F02 phone
-acceptance checklist remains pending; this confirmation is not deployment evidence.
+an Android phone using the local diagnostic preview, then confirmed satisfaction
+with character selection, settings, pause/resume, long presses, and reset and
+approved marking the PR ready for review. This is not deployment or merge authorization.
 Other features remain planned / awaiting detailed design approval.
 
 | ID | Feature and prompt | Dependencies / recommended sequencing |
 | --- | --- | --- |
-| F00 | [Screens, settings, pause and reset](features/00-screens.md) | Awaiting phone test; combined with F02 in PR #3 |
-| F02 | [Two skins and carousel](features/02-characters.md) | Awaiting phone test; integrated with F00 in PR #3 |
+| F00 | [Screens, settings, pause and reset](features/00-screens.md) | Ready for review; combined with F02 in PR #3 |
+| F02 | [Two skins and carousel](features/02-characters.md) | Ready for review; integrated with F00 in PR #3 |
 | F01 | [Squirrel motion and colours](features/01-squirrels.md) | Planned; follows the F00/F02 delivery |
 | F03 | [Mushrooms and distraction](features/03-mushrooms.md) | F00; season hook used later by F07 |
 | F04 | [Portrait ground controls and jumping](features/04-controls.md) | F00, F02, F03 for real mushroom-clearance tests |
@@ -124,12 +125,12 @@ added later but precedes controls/settings work. Agree any change in implementat
   Display names are not unique identities; never merge two people just by matching names.
 - Approve a host for global scores. See [the global plan](features/09-global-podium.md).
   Cloudflare Worker + D1 is recommended, not provisioned or approved yet.
-- Owner phone verification of F00/F02. Scope and behavior are approved;
-  required GitHub checks are verified.
+- Explicit owner merge instruction for F00/F02. Scope, behavior, and phone
+  feedback are approved; required GitHub checks are verified.
 
 ## Immediate next step
 
-Review the combined F00/F02 PR and run the documented real-phone tests against its
-candidate preview. Merge only on explicit owner instruction after that feedback
-and passing required checks. Then verify the deployed /cone_catcher/ game separately.
+Review the combined F00/F02 PR, now approved by the owner after phone testing.
+Merge only on explicit owner instruction and passing required checks. Then verify
+the deployed /cone_catcher/ game separately.
 F01 remains a future design/implementation step.

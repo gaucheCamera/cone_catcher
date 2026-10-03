@@ -1,6 +1,6 @@
 # F00: Screens, settings, pause and reset
 
-Status: awaiting-phone-test. Implementation PR: [#3](https://github.com/gaucheCamera/cone_catcher/pull/3).
+Status: ready-for-review. Implementation PR: [#3](https://github.com/gaucheCamera/cone_catcher/pull/3).
 Dependencies: F02's two-skin carousel is delivered together with this screen flow,
 as approved by the owner on 2026-10-03.
 
@@ -87,7 +87,7 @@ Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md, and docs/features/00-screens.
 ## Delivery evidence
 
 - Commit / PR: implementation 4c4da9c9f070f5dd9008ad66763ffd935b58a2e2,
-  [draft PR #3](https://github.com/gaucheCamera/cone_catcher/pull/3), combined F00/F02.
+  [PR #3](https://github.com/gaucheCamera/cone_catcher/pull/3), combined F00/F02.
 - Automated checks: pnpm test passed on 2026-10-03, covering script parsing,
   setup/settings frozen time, setting validation, one loop on repeated Start,
   selection locking, pause/resume, clearing held movement, reset from playing/
@@ -109,9 +109,11 @@ Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md, and docs/features/00-screens.
   cleared using a temporary diagnostic preview with uncached responses; the exact
   cause of that blank page is not established. No gameplay code changed during this
   troubleshooting. The temporary diagnostic strip is not part of the shipped game.
-- Owner acceptance tests: still pending for settings, pause/resume with held input,
-  all reset routes, long presses, and game-over flow. Phone access alone does not
-  mark these checks passed. Use the checklist in README.
+- Owner acceptance: on 2026-10-03, after the successful phone preview, the owner
+  confirmed satisfaction when asked about character selection, settings,
+  pause/resume, long presses, and reset. Approved marking PR #3 ready for review.
+  This is owner feedback, separate from the automated evidence above; individual
+  manual test steps were not separately logged. No merge authorization was given.
 - Deployed Pages check: pending authorized merge/deployment.
 - Amendments: owner selected F00 first and approved including F02 in the same PR.
   Settings and selected skin persist through reset; podium is deferred until F08.

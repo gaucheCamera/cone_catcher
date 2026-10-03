@@ -1,6 +1,6 @@
 # F02: Two skins and compact character selection
 
-Status: awaiting-phone-test. Implementation PR: [#3](https://github.com/gaucheCamera/cone_catcher/pull/3).
+Status: ready-for-review. Implementation PR: [#3](https://github.com/gaucheCamera/cone_catcher/pull/3).
 Dependencies: integrated with F00 in the same PR, as approved on 2026-10-03.
 
 ## Intended behavior and decisions
@@ -60,7 +60,7 @@ Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md, and docs/features/02-characte
 ## Delivery evidence
 
 - Commit / PR: implementation 4c4da9c9f070f5dd9008ad66763ffd935b58a2e2,
-  [draft PR #3](https://github.com/gaucheCamera/cone_catcher/pull/3), combined F00/F02.
+  [PR #3](https://github.com/gaucheCamera/cone_catcher/pull/3), combined F00/F02.
 - Automated checks: pnpm test passed on 2026-10-03 at desktop and phone sizes.
   Checks cover two-choice wrapping by arrows and keyboard, horizontal mouse and
   simulated touch flicks, ignoring vertical gestures, touch taps after a flick,
@@ -73,9 +73,10 @@ Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md, and docs/features/02-characte
 - Owner phone preview: on 2026-10-03 the owner confirmed the game displays and can
   be played in Firefox on Android through the local diagnostic preview. See F00's
   evidence for the network troubleshooting; this is not a deployed Pages check.
-- Owner acceptance tests: still pending. Flick both ways, try vertical scrolling, start with
-  each skin, pause/resume, reset, and confirm the selector neither moves the player
-  nor starts a run. Check prompt taps after flicks work once; long presses select
-  no text. See README for candidate preview instructions.
+- Owner acceptance: on 2026-10-03, after phone testing, the owner confirmed
+  satisfaction with character selection and the F00/F02 screen controls and
+  approved marking PR #3 ready for review. Individual manual steps were not
+  separately logged; the checklist remains in README for future regression tests.
+  No merge authorization was given.
 - Deployed Pages check: pending authorized merge/deployment.
 - Amendments: owner approved F02 together with F00, including wrapping and retention.
