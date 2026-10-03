@@ -93,14 +93,15 @@ GitHub smoke, Pages deployment, and actual deployed browser flow passed; the pla
 record handset and deployed evidence separately.
 
 F01 behavior and tests are approved, implemented, and awaiting owner phone testing.
-Local automated and visual checks passed; its PR is being prepared. Other features
-remain planned / awaiting detailed design approval.
+Local automated and visual checks passed; [PR #4](https://github.com/gaucheCamera/cone_catcher/pull/4)
+contains the candidate, and GitHub Game smoke test passed on its implementation
+commit. Other features remain planned / awaiting detailed design approval.
 
 | ID | Feature and prompt | Dependencies / recommended sequencing |
 | --- | --- | --- |
 | F00 | [Screens, settings, pause and reset](features/00-screens.md) | Merged and deployment checked; PR #3 |
 | F02 | [Two skins and carousel](features/02-characters.md) | Merged and deployment checked; PR #3 |
-| F01 | [Squirrel motion and colours](features/01-squirrels.md) | Awaiting phone test; PR preparing |
+| F01 | [Squirrel motion and colours](features/01-squirrels.md) | Awaiting phone test; PR #4 |
 | F03 | [Mushrooms and distraction](features/03-mushrooms.md) | F00; season hook used later by F07 |
 | F04 | [Portrait ground controls and jumping](features/04-controls.md) | F00, F02, F03 for real mushroom-clearance tests |
 | F05 | [Difficulty pacing and hawk balance](features/05-pacing.md) | Before F06; preserve existing game rules |

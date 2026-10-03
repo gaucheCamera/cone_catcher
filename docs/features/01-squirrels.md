@@ -1,6 +1,6 @@
 # F01: Erratic squirrel movement and colours
 
-Status: awaiting-phone-test. Implementation PR: preparing.
+Status: awaiting-phone-test. Implementation PR: [#4](https://github.com/gaucheCamera/cone_catcher/pull/4).
 Dependencies: follows merged F00/F02 (PR #3); no new gameplay dependency.
 
 ## Intended behavior and decisions
@@ -62,7 +62,10 @@ Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md, and docs/features/01-squirrel
 
 ## Delivery evidence
 
-- Commit / PR: preparing on feature/f01-squirrels, based on merged main a167f286.
+- Commit / PR: [#4](https://github.com/gaucheCamera/cone_catcher/pull/4), implementation
+  d0f19e25e8f5446f6c10e3709bd1d0f7c10ddbea on feature/f01-squirrels,
+  based on merged main a167f286. The uploaded tree matches tested local commit
+  6e76c37 exactly; the local implementation branch is preserved.
 - Automated checks: `pnpm test` passed on 2026-10-03 (both existing top-level
   checks, at 1280x800 and 390x844 under /cone_catcher/). Controlled randomness
   exercises 1,200 updates per tree across three trees at each viewport, with
@@ -70,7 +73,9 @@ Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md, and docs/features/01-squirrel
   all direction types, facing, rest, and large-step overshoot. Additional checks
   cover tree-relative coordinates, independent aiming, shared drawing/throw/hawk
   positions, and continuing throws during movement rests. Existing F00/F02
-  browser flow and collision checks still pass. GitHub check pending PR creation.
+  browser flow and collision checks still pass. GitHub's
+  [Game smoke test](https://github.com/gaucheCamera/cone_catcher/actions/runs/37152876723)
+  passed on implementation commit d0f19e25; current branch checks remain visible on PR #4.
 - Visual review: actual running game inspected at desktop/phone sizes, and all
   five palette entries inspected enlarged using the game's renderer. No browser errors.
 - Owner phone test: pending; the local phone preview serves the candidate.
