@@ -1,16 +1,55 @@
 # F00: Screens, settings, pause and reset
 
-Status: planned / awaiting detailed design review. Implementation PR: none.
-Dependencies: F02 supplies the two-skin carousel; this plan supplies the surrounding screen flow.
+Status: awaiting-phone-test. Implementation PR: being prepared on feature/f00-screens.
+Dependencies: F02's two-skin carousel is delivered together with this screen flow,
+as approved by the owner on 2026-10-03.
+
+## Assessment and approved scope (2026-10-03)
+
+Assessed main: 18654891cca17d7b83db9fddf139946905b3deda. On that main, F00 and F02
+are unimplemented. That code has four character buttons above the canvas, settings
+in a collapsible details element, pause/resume, and Restart that immediately starts
+a new run. The screen transition code does not centrally clear held input.
+No open PRs were returned. The owner chose F00 as the next feature.
+
+The owner approved the screen flow and tests below on 2026-10-03, with F02 included:
+
+- Deliver F02's two-skin arrow/flick carousel in the startup overlay in this PR,
+  preserving current collision geometry. See 02-characters.md for its evidence.
+- Setup offers Start and Settings. Defer Podium until F08 supplies local rankings.
+- Settings are editable only before a run; returning from settings goes to setup.
+  Preserve existing validation and apply the settings to the next run.
+- Pause leaves the frozen scene visible with Resume and Reset available.
+- Reset from playing, paused, or game over abandons the run and returns to setup.
+  Game-over Play again also returns to setup. Retain settings and selected character.
+- Verify setup/settings do not advance time, pause/resume preserves the run,
+  every reset route clears input, and repeated starts do not create duplicate loops.
+  Run these checks at both existing viewport sizes under /cone_catcher/.
+- Owner phone test before merge: long-press movement, pause, release, and resume;
+  verify movement stops until fresh input. Long-press corner controls and check no
+  selected text; reset from play and pause, edit settings, and start again. Confirm
+  controls are visible and there is no accidental movement or spontaneous restart.
 
 ## Intended behavior and decisions
 
 Agreed: settings have their own screen, selection overlays the initial playfield,
 pause/reset sit faintly in a corner, and reset returns to character selection.
-Proposed: setup offers Start, Settings, and Podium; settings apply to the next run.
+Approved for this delivery: setup offers Start and Settings; settings apply to the
+next run. Podium waits for F08 rather than providing a nonfunctional button.
 Pause keeps the scene visible. Opening setup screens never advances the simulation.
 A reset abandons the run and is not a game-over score submission.
 Use faint styling but large, readable, accessible controls.
+
+Implemented screen flow: setup -> settings -> setup; setup -> playing;
+playing <-> paused; playing -> game over. Reset from playing, paused, or game over,
+and game-over Play again, return to setup without starting. Settings and skin are
+retained. Losing window focus or hiding the page automatically pauses an active run.
+Settings validation runs when leaving settings, allowing numbers to be typed normally.
+All transitions cancel the prior animation loop and clear held movement/drag targets.
+Screen controls have at least 44px touch targets and block long-press text selection.
+Touch activation on release avoids suppressed or duplicate clicks after a flick.
+The canvas height now reserves space for movement controls on a laptop viewport.
+Movement remains the existing hold-buttons/drag behavior; F04 jumping is deferred.
 
 ## Implementation steps
 
@@ -47,8 +86,18 @@ Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md, and docs/features/00-screens.
 
 ## Delivery evidence
 
-- Commit / PR: not started.
-- Automated checks: not run for this feature.
-- Owner phone test: pending implementation.
+- Commit / PR: feature/f00-screens, combined F00/F02 implementation; PR being prepared.
+- Automated checks: pnpm test passed on 2026-10-03, covering script parsing,
+  setup/settings frozen time, setting validation, one loop on repeated Start,
+  selection locking, pause/resume, clearing held movement, reset from playing/
+  paused/game over, game-over Play again, and focus-loss pause. Browser checks run
+  at 1280x800 and 390x844 under /cone_catcher/. git diff --check passed.
+- Local visual review: original game served with the preview server; reviewed setup,
+  settings, playing, and paused screenshots at both sizes. Movement controls fit
+  below the playfield; corner targets are visible and at least 44px tall.
+- GitHub baseline: Game smoke test and Pages deployment succeeded on assessed main.
+  Active Protect main ruleset requires PRs and Game smoke test; see WORKFLOW.md.
+- Owner phone test: pending. Use the candidate preview instructions in README.
 - Deployed Pages check: pending authorized merge/deployment.
-- Amendments: update here when a decision or implementation detail changes.
+- Amendments: owner selected F00 first and approved including F02 in the same PR.
+  Settings and selected skin persist through reset; podium is deferred until F08.

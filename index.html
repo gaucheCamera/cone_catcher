@@ -13,6 +13,7 @@
       --line:#597064;--accent:#d7b354;--button:#385546
     }
     *{box-sizing:border-box}
+    [hidden]{display:none!important}
     html,body{
       margin:0;min-height:100%;background:var(--bg);color:var(--text);
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
@@ -26,8 +27,9 @@
     }
     .app{width:min(100%,960px);margin:0 auto}
     h1{font-size:clamp(20px,5vw,30px);margin:0 0 8px;text-align:center;letter-spacing:.03em}
-    details{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:10px}
-    summary{cursor:pointer;font-weight:700;user-select:none}
+    .settings-screen{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+    #settings-back{position:sticky;top:8px;z-index:1}
+    h2{margin:0 0 12px;font-size:22px}
     .settings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:12px}
     fieldset{border:0;padding:0;margin:0;min-width:0}
     .settings legend{font-weight:700;font-size:14px;margin-bottom:6px}
@@ -40,23 +42,30 @@
     .check{display:flex;align-items:center;gap:7px;min-height:42px}
     .check input{width:19px;height:19px}
     .summary{font-size:11px;color:var(--muted);margin:10px 0 0}
-    .characters{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
-    .characters span{font-size:13px;font-weight:700}
+    .characters{display:flex;gap:12px;align-items:center;justify-content:center;touch-action:pan-y}
+    .characters button{min-width:44px;font-size:22px}
+    #character-preview{width:112px;height:140px;touch-action:pan-y}
+    #character-name{display:block;margin:4px 0 14px;font-weight:700}
     button{
       appearance:none;border:1px solid var(--line);background:var(--button);color:var(--text);
       border-radius:10px;min-height:44px;padding:8px 13px;font:600 14px system-ui;
-      touch-action:manipulation
+      touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;cursor:pointer
     }
-    .characters button.selected{background:var(--accent);color:#2d281d;border-color:#f0d883}
-    .characters button:disabled,input:disabled{opacity:.55}
+    button:disabled,input:disabled{opacity:.55}
+    button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
     .hud{display:flex;gap:10px 16px;flex-wrap:wrap;align-items:center;font-size:13px;margin:7px 2px}
     .hud strong{color:white}.status{margin-left:auto;color:var(--muted)}
-    .gamebox{overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#25382f;box-shadow:0 7px 30px rgba(0,0,0,.22)}
+    .gamebox{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#25382f;box-shadow:0 7px 30px rgba(0,0,0,.22)}
     canvas{display:block;width:100%;height:520px;touch-action:none}
-    .controls{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;margin-top:9px}
+    .controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
     .controls button{min-height:52px;font-size:16px}
     .start{background:var(--accent);color:#2c291f;border-color:#ead47b;padding-inline:22px}
-    .subcontrols{display:flex;justify-content:center;gap:8px;margin-top:7px}
+    .corner-controls{position:absolute;top:8px;right:8px;display:flex;gap:6px;z-index:2}
+    .corner-controls button{min-width:54px;background:rgba(23,36,31,.78);border-color:rgba(241,234,220,.35);color:#e1ddcf}
+    .screen-overlay{position:absolute;inset:0;display:grid;place-items:center;background:rgba(22,25,20,.38)}
+    .screen-card{width:min(290px,calc(100% - 24px));padding:22px 16px;text-align:center;background:rgba(38,46,37,.94);border:1px solid var(--line);border-radius:14px}
+    .screen-card p{color:var(--muted)}
+    .screen-actions{display:flex;gap:8px;justify-content:center}
     .tip{text-align:center;color:var(--muted);font-size:11px;margin-top:7px}
     @media(max-width:720px){
       body{padding-left:6px;padding-right:6px}
@@ -64,13 +73,12 @@
       .settings{grid-template-columns:1fr 1fr}
       .hud{gap:5px 10px}.status{width:100%;margin-left:0}
       .gamebox{border-radius:10px}
-      .characters{justify-content:center}.characters span{width:100%;text-align:center}
       .tip{font-size:10px}
     }
     @media(max-width:470px){
       .settings{grid-template-columns:1fr}
       .fields{grid-template-columns:1fr 1fr}
-      details{padding:9px}.controls button{padding:7px 6px}h1{margin-bottom:5px}
+      .controls button{padding:7px 6px}h1{margin-bottom:5px}
     }
   </style>
 </head>
@@ -78,8 +86,9 @@
 <div class="app">
   <h1>CONE CATCHER</h1>
 
-  <details>
-    <summary>Game tuning settings</summary>
+  <section id="settings-screen" class="settings-screen" aria-labelledby="settings-title" hidden>
+    <h2 id="settings-title">Game tuning settings</h2>
+    <button id="settings-back">Back to setup</button>
     <div class="settings">
       <fieldset><legend>Hawk</legend><div class="fields">
         <label>Initial buffer (s)<input id="hawk-buffer" type="number" min="0" max="300" step="5" value="45"></label>
@@ -122,18 +131,12 @@
       </div></fieldset>
     </div>
     <p class="summary" id="settings-summary">Settings lock when a run begins.</p>
-  </details>
+  </section>
 
-  <div class="characters">
-    <span>Character</span>
-    <button data-char="jack" class="selected">Jack</button>
-    <button data-char="cristian">Cristian</button>
-    <button data-char="susanna">Susanna</button>
-    <button data-char="lucy">Lucy</button>
-  </div>
+  <section id="play-screen" aria-label="Game">
 
   <div class="hud">
-    <span>Player <strong id="player">Jack</strong></span>
+    <span>Player <strong id="player">Character 1</strong></span>
     <span>Score <strong id="score">0</strong></span>
     <span>Caught <strong id="caught">0</strong></span>
     <span>Bonks <strong id="bonks">0</strong>/<strong id="bonk-max">3</strong></span>
@@ -142,20 +145,42 @@
     <span class="status" id="status">Ready</span>
   </div>
 
-  <div class="gamebox"><canvas id="game" aria-label="Cone Catcher game"></canvas></div>
+  <div class="gamebox">
+    <canvas id="game" tabindex="-1" aria-label="Cone Catcher game"></canvas>
+    <div id="corner-controls" class="corner-controls" hidden>
+      <button id="pause">Pause</button>
+      <button id="restart">Reset</button>
+    </div>
+    <div id="setup-screen" class="screen-overlay">
+      <div class="screen-card">
+        <h2>Choose your character</h2>
+        <div id="characters" class="characters" role="group" aria-label="Character selection">
+          <button id="character-prev" aria-label="Previous character">‹</button>
+          <canvas id="character-preview" width="224" height="280" aria-label="Selected character preview"></canvas>
+          <button id="character-next" aria-label="Next character">›</button>
+        </div>
+        <span id="character-name" aria-live="polite">Character 1</span>
+        <div class="screen-actions">
+          <button id="start" class="start">Start</button>
+          <button id="settings-open">Settings</button>
+        </div>
+      </div>
+    </div>
+    <div id="paused-screen" class="screen-overlay" hidden>
+      <div class="screen-card"><h2>Paused</h2><p>Resume when ready.</p><button id="resume">Resume</button></div>
+    </div>
+    <div id="over-screen" class="screen-overlay" hidden>
+      <div class="screen-card"><h2>Run over</h2><p id="run-result"></p><button id="play-again">Play again</button></div>
+    </div>
+  </div>
 
   <div class="controls">
     <button id="left" disabled>◀ LEFT</button>
-    <button id="start" class="start">START</button>
     <button id="right" disabled>RIGHT ▶</button>
   </div>
 
-  <div class="subcontrols">
-    <button id="pause" disabled>Pause</button>
-    <button id="restart">Restart</button>
-  </div>
-
   <div class="tip">Phone: hold LEFT/RIGHT or drag directly on the game.</div>
+  </section>
 </div>
 
 <script>
@@ -165,7 +190,8 @@ const startBtn=$('#start'),leftBtn=$('#left'),rightBtn=$('#right'),pauseBtn=$('#
 const scoreEl=$('#score'),caughtEl=$('#caught'),bonksEl=$('#bonks'),bonkMaxEl=$('#bonk-max'),
       treesEl=$('#trees'),squirrelsEl=$('#squirrels'),playerEl=$('#player'),statusEl=$('#status'),
       summaryEl=$('#settings-summary');
-const charBtns=[...document.querySelectorAll('[data-char]')],settingInputs=[...document.querySelectorAll('details input')];
+const settingInputs=[...document.querySelectorAll('#settings-screen input')];
+const characterIds=['jack','cristian'],selector=$('#characters'),preview=$('#character-preview');
 const reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 let W=620,H=340,DPR=1,groundY=307,state='ready',elapsed=0,caught=0,bonks=0,bonus=0,finalScore=0,invuln=0;
@@ -176,10 +202,8 @@ let hawk={active:false,t:0,duration:1.55,target:null,carrying:null,grabbed:false
 const cfg={};
 
 const chars={
-  jack:{name:'Jack',h:52,w:17,coat:'#f0c43d',skin:'#d5a06e',hair:'#8b713e',beard:'#8b713e',cap:'#315b55',beardOn:true,capOn:true,hairLong:false},
-  cristian:{name:'Cristian',h:47,w:16,coat:'#79502e',skin:'#d2a072',hair:'#593822',beard:'#593822',beardOn:true,capOn:false,hairLong:false},
-  susanna:{name:'Susanna',h:43,w:15,coat:'#8b8172',skin:'#d7a77c',hair:'#553524',beardOn:false,capOn:false,hairLong:true},
-  lucy:{name:'Lucy',h:39,w:14,coat:'#d6cfbd',skin:'#e0b184',hair:'#d7ad52',beardOn:false,capOn:false,hairLong:true}
+  jack:{name:'Character 1',h:52,w:17,coat:'#f0c43d',skin:'#d5a06e',hair:'#8b713e',beard:'#8b713e',cap:'#315b55',beardOn:true,capOn:true,hairLong:false},
+  cristian:{name:'Character 2',h:47,w:16,coat:'#79502e',skin:'#d2a072',hair:'#593822',beard:'#593822',beardOn:true,capOn:false,hairLong:false}
 };
 
 const C={
@@ -245,7 +269,6 @@ function readSettings(){
   bonkMaxEl.textContent=cfg.maxBonks;
   summaryEl.textContent=`Hawk: ${cfg.hawkBuffer}s buffer, ${Math.round(cfg.hawkProb*100)}% every ${cfg.hawkInterval}s · Throws: ${cfg.throwMin}–${cfg.throwMax}s · Hare ${(cfg.hare*100).toFixed(1)}% · Germination ${Math.round(cfg.germ*100)}%.`;
 }
-settingInputs.forEach(el=>el.addEventListener('input',()=>{if(state!=='playing'){readSettings();hud();draw(performance.now())}}));
 
 function makeTree(x,h,depth=Math.random()){return{x,h,depth,sway:Math.random()*6.28}}
 function makeSquirrel(treeIndex){
@@ -285,7 +308,9 @@ function resize(){
     ? Math.max(W*1.30, window.innerHeight*.64)
     : Math.max(W*.82, window.innerHeight*.62);
 
-  H=Math.round(clamp(targetH,460,700));
+  // Keep the ground and movement buttons visible together on laptop screens.
+  const availableH=window.innerHeight-canvas.getBoundingClientRect().top-100;
+  H=Math.round(clamp(Math.min(targetH,availableH),360,700));
   canvas.style.height=H+'px';
 
   groundY=Math.round(H*.92);
@@ -294,7 +319,7 @@ function resize(){
   canvas.height=Math.round(H*DPR);
   ctx.setTransform(DPR,0,0,DPR,0,0);
 
-  if(state==='ready'){
+  if(state==='ready'||state==='settings'){
     trees=[
       makeTree(W*.13,H*.90,.78),
       makeTree(W*.49,H*.95,.34),
@@ -315,30 +340,97 @@ function hud(msg){
 }
 
 function choose(id){
-  if(state==='playing')return;
+  if(state!=='ready'||!characterIds.includes(id))return;
   selected=id;
-  charBtns.forEach(b=>b.classList.toggle('selected',b.dataset.char===id));
-  hud();draw(performance.now());
+  $('#character-name').textContent=chars[id].name;
+  preview.setAttribute('aria-label',chars[id].name+' preview');
+  hud();draw(performance.now());drawPreview();
 }
-charBtns.forEach(b=>b.addEventListener('click',()=>choose(b.dataset.char)));
+function cycleCharacter(direction){
+  choose(characterIds[(characterIds.indexOf(selected)+direction+characterIds.length)%characterIds.length]);
+}
+function activate(button,action){
+  let touch=null,ignoreTouchClick=false;
+  button.addEventListener('pointerdown',e=>{
+    if(e.pointerType!=='touch')ignoreTouchClick=false;
+    if(e.pointerType==='touch')touch={id:e.pointerId,x:e.clientX,y:e.clientY};
+  });
+  button.addEventListener('pointercancel',()=>touch=null);
+  button.addEventListener('pointerup',e=>{
+    if(!touch||touch.id!==e.pointerId)return;
+    const tapped=Math.hypot(e.clientX-touch.x,e.clientY-touch.y)<12;touch=null;
+    if(tapped&&!button.disabled){ignoreTouchClick=true;e.preventDefault();action()}
+  });
+  // Activate touch on release: browsers may suppress a synthetic click after a flick.
+  // Ignore that compatibility click so touch activates once; mouse/keyboard use click.
+  button.addEventListener('click',e=>{
+    if(ignoreTouchClick){ignoreTouchClick=false;if(e.detail!==0)return}
+    if(e.pointerType!=='touch'&&!e.sourceCapabilities?.firesTouchEvents&&!button.disabled)action();
+  });
+}
+activate($('#character-prev'),()=>cycleCharacter(-1));
+activate($('#character-next'),()=>cycleCharacter(1));
+selector.addEventListener('keydown',e=>{
+  if(e.key==='ArrowLeft'||e.key==='ArrowRight'){
+    e.preventDefault();cycleCharacter(e.key==='ArrowLeft'?-1:1);
+  }
+});
+let flick=null;
+selector.addEventListener('pointerdown',e=>{
+  if(state==='ready'&&e.isPrimary&&!e.target.closest('button')){
+    flick={id:e.pointerId,x:e.clientX,y:e.clientY};
+    // Touch already captures its initial target; keep native button taps intact.
+    if(e.pointerType==='mouse')selector.setPointerCapture(e.pointerId);
+  }
+});
+selector.addEventListener('pointerup',e=>{
+  if(!flick||flick.id!==e.pointerId)return;
+  const dx=e.clientX-flick.x,dy=e.clientY-flick.y;flick=null;
+  // A short horizontal flick selects; vertical gestures remain available for scrolling.
+  if(Math.abs(dx)>=35&&Math.abs(dx)>Math.abs(dy)*1.5)cycleCharacter(dx<0?1:-1);
+});
+selector.addEventListener('pointercancel',()=>flick=null);
+selector.addEventListener('lostpointercapture',()=>flick=null);
 
-function lockSetup(v){settingInputs.forEach(el=>el.disabled=v);charBtns.forEach(b=>b.disabled=v)}
+function clearInput(){
+  moveDir=0;targetX=playerX;flick=null;
+  for(const [element,id] of heldPointers){
+    if(element.hasPointerCapture(id))element.releasePointerCapture(id);
+  }
+  heldPointers.clear();
+}
+const heldPointers=new Map();
+function transition(next){
+  cancelAnimationFrame(raf);raf=0;clearInput();state=next;
+  const playing=next==='playing',setup=next==='ready',settings=next==='settings';
+  $('#settings-screen').hidden=!settings;$('#play-screen').hidden=settings;
+  $('#setup-screen').hidden=!setup;$('#paused-screen').hidden=next!=='paused';
+  $('#over-screen').hidden=next!=='over';$('#corner-controls').hidden=setup||settings;
+  leftBtn.disabled=!playing;rightBtn.disabled=!playing;pauseBtn.disabled=next==='over';
+  pauseBtn.textContent=next==='paused'?'Resume':'Pause';
+  settingInputs.forEach(el=>el.disabled=!settings);
+  $('#character-prev').disabled=!setup;$('#character-next').disabled=!setup;
+  hud({ready:'Ready',settings:'Settings',playing:'Catch them. Dodge them.',paused:'Paused',over:'Run over'}[next]);
+  draw(performance.now());
+  if(setup)drawPreview();
+  if(playing){last=performance.now();raf=requestAnimationFrame(loop)}
+  const focus={ready:'#start',settings:'#settings-back',playing:'#game',paused:'#resume',over:'#play-again'}[next];
+  if(focus)$(focus).focus({preventScroll:true});
+}
 function start(){
-  reset();state='playing';startBtn.disabled=true;leftBtn.disabled=false;rightBtn.disabled=false;
-  pauseBtn.disabled=false;restartBtn.disabled=false;lockSetup(true);
-  last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);
+  if(state!=='ready')return;
+  reset();transition('playing');
 }
 function pause(){
-  if(state==='playing'){
-    state='paused';pauseBtn.textContent='Resume';cancelAnimationFrame(raf);draw(performance.now());
-  }else if(state==='paused'){
-    state='playing';pauseBtn.textContent='Pause';last=performance.now();raf=requestAnimationFrame(loop);
-  }
+  if(state==='playing')transition('paused');
+  else if(state==='paused')transition('playing');
+}
+function returnToSetup(){
+  transition('ready');reset();hud('Ready');draw(performance.now());drawPreview();
 }
 function end(){
-  state='over';finalScore=scoreNow();startBtn.disabled=false;startBtn.textContent='Play again';
-  leftBtn.disabled=true;rightBtn.disabled=true;pauseBtn.disabled=true;lockSetup(false);
-  hud('Run over');draw(performance.now());
+  finalScore=scoreNow();$('#run-result').textContent='Score '+finalScore+' · '+caught+' caught';
+  transition('over');
 }
 
 function toss(s){
@@ -673,8 +765,8 @@ function drawHawk(now){
   if(hawk.carrying&&p.u>=.52)drawSquirrelAt({x:p.x,y:p.y+15},hawk.carrying,.46);
 }
 
-function drawBasket(){
-  const b=basketGeometry();ctx.save();ctx.translate(b.cx,b.cy);
+function drawBasket(context=ctx,b=basketGeometry()){
+  const ctx=context;ctx.save();ctx.translate(b.cx,b.cy);
   ctx.strokeStyle=C.basketDark;ctx.lineWidth=1.4;
   ctx.beginPath();ctx.arc(0,-1,b.w*.40,Math.PI*1.08,Math.PI*1.92);ctx.stroke();
 
@@ -692,11 +784,11 @@ function drawBasket(){
   ctx.restore();
 }
 
-function drawPlayer(now){
-  if(invuln>0&&Math.floor(invuln*12)%2===0)return;
-  const ch=chars[selected],h=ch.h,w=ch.w,bob=reduced?0:Math.sin(now*.007)*.35;
+function drawPlayer(now,context=ctx,x=playerX,y=groundY,direction=facing,isPreview=false){
+  if(!isPreview&&invuln>0&&Math.floor(invuln*12)%2===0)return;
+  const ctx=context,ch=chars[selected],h=ch.h,w=ch.w,bob=reduced||isPreview?0:Math.sin(now*.007)*.35;
 
-  ctx.save();ctx.translate(playerX,groundY+bob);ctx.scale(facing,1);
+  ctx.save();ctx.translate(x,y+bob);ctx.scale(direction,1);
   ctx.strokeStyle='#37281f';ctx.lineWidth=2;
   ctx.beginPath();ctx.moveTo(-w*.18,-8);ctx.lineTo(-w*.28,0);ctx.moveTo(w*.18,-8);ctx.lineTo(w*.32,0);ctx.stroke();
 
@@ -725,16 +817,12 @@ function drawPlayer(now){
   ctx.beginPath();ctx.moveTo(w*.34,-h*.48);ctx.lineTo(w*.70,-h*.45);ctx.stroke();
   ctx.restore();
 
-  drawBasket();
+  drawBasket(ctx,{cx:x+direction*20,cy:y-h*.54,w:26,h:12});
 }
 
-function overlay(title,sub){
-  ctx.fillStyle='rgba(22,25,20,.38)';ctx.fillRect(0,0,W,H);
-  rr(W/2-145,H/2-49,290,98,14,'rgba(38,46,37,.91)','rgba(255,255,255,.15)',1);
-  ctx.textAlign='center';ctx.fillStyle='#f3ead7';ctx.font='700 22px system-ui';
-  ctx.fillText(title,W/2,H/2-8);
-  ctx.fillStyle='#d8d2c1';ctx.font='14px system-ui';
-  ctx.fillText(sub,W/2,H/2+18);
+function drawPreview(){
+  const context=preview.getContext('2d');context.clearRect(0,0,preview.width,preview.height);
+  context.save();context.scale(4,4);drawPlayer(0,context,23,62,1,true);context.restore();
 }
 
 function draw(now=0){
@@ -761,9 +849,6 @@ function draw(now=0){
   }
   ctx.globalAlpha=1;
 
-  if(state==='ready')overlay('CONE CATCHER','Tune the settings, then start');
-  if(state==='paused')overlay('PAUSED','Resume when ready');
-  if(state==='over')overlay('RUN OVER','Score '+finalScore+' · '+caught+' cones');
 }
 
 function loop(now){
@@ -781,6 +866,8 @@ function point(e){
 }
 
 canvas.addEventListener('pointerdown',e=>{
+  if(state!=='playing')return;
+  heldPointers.set(canvas,e.pointerId);
   e.preventDefault();canvas.setPointerCapture?.(e.pointerId);point(e);
 });
 canvas.addEventListener('pointermove',e=>{
@@ -789,18 +876,30 @@ canvas.addEventListener('pointermove',e=>{
 
 function hold(btn,dir){
   btn.addEventListener('pointerdown',e=>{
+    if(state!=='playing')return;
+    heldPointers.set(btn,e.pointerId);
     e.preventDefault();moveDir=dir;facing=dir;btn.setPointerCapture?.(e.pointerId);
   });
-  const stop=()=>{if(moveDir===dir)moveDir=0};
+  const stop=()=>{heldPointers.delete(btn);if(moveDir===dir){moveDir=0;targetX=playerX}};
   btn.addEventListener('pointerup',stop);
   btn.addEventListener('pointercancel',stop);
   btn.addEventListener('lostpointercapture',stop);
 }
 hold(leftBtn,-1);hold(rightBtn,1);
 
-startBtn.addEventListener('click',start);
-restartBtn.addEventListener('click',start);
-pauseBtn.addEventListener('click',pause);
+activate(startBtn,start);
+activate(restartBtn,returnToSetup);
+activate(pauseBtn,pause);
+activate($('#resume'),pause);
+activate($('#play-again'),returnToSetup);
+activate($('#settings-open'),()=>{if(state==='ready')transition('settings')});
+activate($('#settings-back'),()=>{
+  if(state!=='settings')return;
+  // Validate on leaving settings, so partially typed numbers are not rewritten mid-edit.
+  readSettings();transition('ready');resize();
+});
+window.addEventListener('blur',()=>{if(state==='playing')transition('paused')});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='playing')transition('paused')});
 
 readSettings();
 let resizeQueued=false;
@@ -815,7 +914,7 @@ function queueResize(){
 window.addEventListener('resize',queueResize,{passive:true});
 window.addEventListener('orientationchange',queueResize,{passive:true});
 resize();
-hud('Ready');
+transition('ready');
 })();
 </script>
 </body>

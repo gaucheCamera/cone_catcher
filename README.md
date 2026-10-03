@@ -13,6 +13,31 @@ work. Update them with the relevant implementation PR and verification evidence.
 
 ## Development checks
 
+Preview this branch with `pnpm preview` and open
+http://127.0.0.1:4173/cone_catcher/. Stop the server with Ctrl+C.
+The preview serves only the game and uses the same URL prefix as GitHub Pages.
+
+For a real-phone candidate test, use `pnpm preview --host 0.0.0.0` on the laptop,
+connect the phone to the same Wi-Fi, and open
+`http://<laptop-Wi-Fi-IPv4-address>:4173/cone_catcher/` on the phone. Find that
+address in Windows Wi-Fi properties (or `ipconfig`); 0.0.0.0 is a listening address,
+not the phone URL. Windows may require allowing Node on the private network.
+This is a candidate preview; the public Pages game changes only after merge.
+
+F00/F02 phone test before merge:
+1. Flick between Character 1 and Character 2, tap arrows, and try a vertical swipe.
+   Check selection wraps, vertical swipes do not select, and taps after flicks work once.
+2. Open Settings, edit a value, return, and start with each character.
+   Check the preview and selected skin agree; settings cannot be edited during a run.
+3. Hold movement, pause with another finger, release movement, and resume.
+   Time must freeze; the player must wait for fresh input after resume.
+4. Long-press corner controls; check no text selection and usable targets.
+   Reset while playing and paused, and use Reset or Play again after losing.
+   Each route must return to selection with settings/skin retained and no automatic start.
+5. Start again, play, and switch away from the browser and back; the run should pause.
+   Confirm the character remains visible above the movement buttons. Also check the
+   existing baby-hare ear behavior described below.
+
 Install dependencies with `pnpm install --frozen-lockfile`, then run `pnpm test`.
 The test checks the inline JavaScript and starts the game in Microsoft Edge at
 desktop and phone widths. It serves the page under `/cone_catcher/` to catch
