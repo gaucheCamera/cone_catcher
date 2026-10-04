@@ -58,10 +58,21 @@ Before pushing, run agreed tests and `git diff --check`. Open a focused PR with 
 problem, result, test evidence, limitations, and exact manual test. Inspect its diff
 and automated checks. Fix failures. Update the roadmap and feature evidence.
 
+For F03, the owner requested on 2026-10-04 that local/Codex and real-phone Wi-Fi
+previews happen before any commit or PR. Incorporate preview feedback first.
+The owner declined the unexpected Windows Node.js firewall prompt. Explain and
+obtain explicit approval before any system/network allowance; never bypass the
+declined prompt. A phone-sized Codex viewport is only simulated layout evidence.
+
 For gameplay, the owner tests on a real portrait phone before merge: input feel,
 long press, swipes, visibility, and the affected mechanic. A phone-sized desktop
 browser is not evidence of real touch behavior. Agree an accessible candidate
 preview if needed; do not merge just to provide a preview.
+
+F03 exception agreed on 2026-10-04: the owner chose to skip Wi-Fi phone preview
+and test on GitHub Pages after merge. Leave the firewall unchanged. Finish local
+desktop and phone-size checks, prepare the PR, and obtain explicit merge
+authorization as usual. Record the real-phone result after deployment.
 
 Merge only on explicit instruction. After merge, verify the Pages deployment and
 actually load/play the deployed /cone_catcher/ game, including its assets and

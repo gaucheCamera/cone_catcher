@@ -1,6 +1,6 @@
 # Cone Catcher roadmap and agent handoff
 
-Last assessed: 2026-10-03. This is a living plan, not a list of implemented features.
+Last assessed: 2026-10-04. This is a living plan, not a list of implemented features.
 The owner approved this documentation structure and the lightweight test baseline.
 Detailed feature tuning and the leaderboard provider remain subject to review.
 
@@ -17,14 +17,14 @@ proposed change and seek owner agreement. Do not execute the entire roadmap at o
 
 ## Repository assessment
 
-- Assessed remote main: a167f28677e6c1a6e78a226579ff860d9e4a4e49, merging
-  [PR #3](https://github.com/gaucheCamera/cone_catcher/pull/3), F00/F02.
+- Assessed remote main: 5de7afbe7abedf54bf4153a4741489d905b85e7f, merging
+  [PR #4](https://github.com/gaucheCamera/cone_catcher/pull/4), F01 after F00/F02.
 - The game is plain HTML/CSS/JavaScript in index.html, with canvas-drawn artwork.
   Rendering, settings, simulation, input, and state transitions share one script.
 - Two characters exist on main: Jack and Cristian labelled Character 1 and Character 2.
   They have different dimensions; the owner explicitly requires skin-specific hitboxes.
-- Main squirrels move vertically with side changes and include grey/black fur.
-  The F01 candidate adds bounded 2D scampers and brown-to-red fur.
+- Main squirrels combine slow climbing and bounded 2D scampers, with independent
+  facing and brown-to-red fur. F01 is merged.
 - Hawks remove squirrels. Population-based hawks are a balancing mechanism.
 - Difficulty currently changes throw intervals, cone gravity, and targeting with
   elapsed time; tree recruitment also increases pressure. Tuning must address all.
@@ -33,14 +33,15 @@ proposed change and seek owner agreement. Do not execute the entire roadmap at o
   hares-saved statistic without accidentally changing scoring.
 - Current score is survival points plus catch points and an additional hare bonus.
 - Reset returns to character setup. Settings have a dedicated screen; runs can pause/resume.
-- There is no persistent ranking, custom preset library, mushroom, jump, or season system.
+- Main has no persistent ranking, custom preset library, mushroom, jump, or season
+  system. F03 mushrooms are ready for PR review on a feature branch.
 - pnpm test passes at desktop (1280x800) and phone (390x844) sizes under
-  /cone_catcher/, including F01 rule checks in the candidate. GitHub smoke and
+  /cone_catcher/, including F01 and local F03 rule checks. GitHub smoke and
   Pages deployment passed on assessed main. Actual deployed setup, skin selection,
-  settings/back, start, pause/resume, and reset passed at both sizes on 2026-10-03,
+  settings/back, start, pause/resume, and reset passed at both sizes on 2026-10-04,
   without browser/asset errors; an initial mobile connection reset cleared on retry.
-- F01 started on feature/f01-squirrels from fetched origin/main; local main and
-  the earlier local implementation branch were preserved.
+- F03 started on feature/f03-mushrooms-preview from fetched origin/main 5de7afbe;
+  existing branches and the owner's untracked opening_prompt.md were preserved.
 - Main protection is now verified: the active Protect main ruleset requires PRs
   and the Game smoke test with an up-to-date branch. See WORKFLOW.md for details.
 - The unpublished refactoring branch was not inspected or reused.
@@ -55,9 +56,14 @@ proposed change and seek owner agreement. Do not execute the entire roadmap at o
 - Ground split into left/right control regions; upward swipe gives a small jump
   sufficient to clear a mushroom. Exact gesture tuning awaits a prototype.
 - Mushrooms are smaller than the player, grey/brown, emerge at a configurable rate,
-  and launch generally upward with some random sideways movement and a small arc/loop.
+  and launch generally upward with some random sideways movement, a small arc/loop
+  and rotation in flight (owner clarification on 2026-10-04).
+  Preview feedback limits flight height to the base of the leaves and sets
+  distraction to 5 seconds minimum/default, adjustable in Settings.
   At flight completion the nearest squirrel is distracted and stops throwing cones
-  temporarily. No mushrooms in winter.
+  temporarily while continuing to move. Future availability is autumn only,
+  with an 8-second emergence interval. F03 enables them from run start for
+  functionality previews; the season clock is deferred to F07.
 - Squirrels move erratically within their own tree and look left/right independently
   of their throw targeting. Their fur is brown through red, not grey/black.
   Initial F01 defaults were 12–24px bursts at 40px/second. After phone feedback,
@@ -107,15 +113,20 @@ final adjustments widen horizontal movement toward the base while constraining
 the top, and increase scamper speed/distance. They pass locally; the owner tried
 the final phone preview and confirmed "Ready for review" on 2026-10-03.
 Local automated and visual checks passed; [PR #4](https://github.com/gaucheCamera/cone_catcher/pull/4)
-contains the candidate, and GitHub Game smoke test passed on its implementation
-commit. Other features remain planned / awaiting detailed design approval.
+merged on 2026-10-03. Main CI, Pages deployment and actual deployed browser flow
+were verified on 2026-10-04.
+
+F03 began on 2026-10-04. Rotating mushroom flights, squirrel distraction and easier
+settings fields passed local preview and automated checks. The owner chose to skip
+Wi-Fi phone preview and leave the firewall unchanged; real-phone testing will use
+GitHub Pages after an explicitly authorized merge. Other features remain planned.
 
 | ID | Feature and prompt | Dependencies / recommended sequencing |
 | --- | --- | --- |
 | F00 | [Screens, settings, pause and reset](features/00-screens.md) | Merged and deployment checked; PR #3 |
 | F02 | [Two skins and carousel](features/02-characters.md) | Merged and deployment checked; PR #3 |
-| F01 | [Squirrel motion and colours](features/01-squirrels.md) | Ready for review after owner phone acceptance; PR #4 |
-| F03 | [Mushrooms and distraction](features/03-mushrooms.md) | F00; season hook used later by F07 |
+| F01 | [Squirrel motion and colours](features/01-squirrels.md) | Merged and deployment checked; PR #4 |
+| F03 | [Mushrooms and distraction](features/03-mushrooms.md) | Ready for PR review; post-merge phone test pending; autumn hook used later by F07 |
 | F04 | [Portrait ground controls and jumping](features/04-controls.md) | F00, F02, F03 for real mushroom-clearance tests |
 | F05 | [Difficulty pacing and hawk balance](features/05-pacing.md) | Before F06; preserve existing game rules |
 | F06 | [Difficulty presets](features/06-difficulties.md) | F05 |
@@ -131,7 +142,7 @@ added later but precedes controls/settings work. Agree any change in implementat
 
 - Approve numerical defaults and interactions immediately before each feature.
 - Confirm jump gesture behavior, including holding movement through a swipe.
-- Decide repeated mushroom-hit stacking and disappearance behavior when winter begins.
+- Review F03's PR and test its deployed feel on Android Firefox after merge.
 - Confirm tree statistic definition and local top-five retention across alternate sorts.
 - Confirm global eligibility: recommended standard presets only, local named custom
   categories. The owner approved account-free submission, not this restriction explicitly.
@@ -139,10 +150,9 @@ added later but precedes controls/settings work. Agree any change in implementat
   Display names are not unique identities; never merge two people just by matching names.
 - Approve a host for global scores. See [the global plan](features/09-global-podium.md).
   Cloudflare Worker + D1 is recommended, not provisioned or approved yet.
-- Explicit F01 merge instruction after required GitHub checks pass; phone feedback is accepted.
 
 ## Immediate next step
 
-Review F01's combined movement PR, accepted by the owner after phone playtesting.
-Merge only on explicit owner instruction and passing required checks, then verify
-the deployed /cone_catcher/ game separately. See the F01 plan for the exact test.
+Open and review F03's PR after local checks. Merge only on explicit owner instruction,
+then verify Pages and perform the F03 phone checklist on Android Firefox. Leave the
+firewall unchanged. Do not implement seasons yet; connect autumn-only mushroom emergence in F07.

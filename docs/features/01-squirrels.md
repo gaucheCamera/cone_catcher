@@ -1,6 +1,6 @@
 # F01: Erratic squirrel movement and colours
 
-Status: ready-for-review. Implementation PR: [#4](https://github.com/gaucheCamera/cone_catcher/pull/4).
+Status: merged. Implementation PR: [#4](https://github.com/gaucheCamera/cone_catcher/pull/4), merged on 2026-10-03 as 5de7afbe.
 Dependencies: follows merged F00/F02 (PR #3); no new gameplay dependency.
 
 ## Intended behavior and decisions
@@ -134,7 +134,7 @@ Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md, and docs/features/01-squirrel
   horizontal scaling toward the base. Earlier observations shaped the design
   recorded above. Individual pause/reset steps were not separately logged;
   automated regression checks cover them and the phone checklist remains available.
-- Deployed Pages check: pending authorized merge/deployment.
+- Deployed Pages check: assessed on 2026-10-04. GitHub smoke and Pages deployment passed on merged main 5de7afbe. Actual deployed selection, settings/back, start, pause/resume and reset passed at 1280x800 and 390x844 with visible brown/red squirrels and no browser errors. An initial connection reset cleared on retry. Phone acceptance remains the separately recorded pre-merge evidence above.
 - Amendments: movement excluded from Settings. Owner phone feedback led from
   local scampers to alternating journeys, then combined climbing and scampers
   with wider horizontal movement toward the base.
