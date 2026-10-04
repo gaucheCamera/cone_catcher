@@ -17,8 +17,8 @@ proposed change and seek owner agreement. Do not execute the entire roadmap at o
 
 ## Repository assessment
 
-- Assessed remote main: 5de7afbe7abedf54bf4153a4741489d905b85e7f, merging
-  [PR #4](https://github.com/gaucheCamera/cone_catcher/pull/4), F01 after F00/F02.
+- Assessed remote main: ac956152c79c9769311ec1a088f9360bcfa8ed02, merging
+  [PR #5](https://github.com/gaucheCamera/cone_catcher/pull/5), F03 after F00/F02/F01.
 - The game is plain HTML/CSS/JavaScript in index.html, with canvas-drawn artwork.
   Rendering, settings, simulation, input, and state transitions share one script.
 - Two characters exist on main: Jack and Cristian labelled Character 1 and Character 2.
@@ -33,8 +33,9 @@ proposed change and seek owner agreement. Do not execute the entire roadmap at o
   hares-saved statistic without accidentally changing scoring.
 - Current score is survival points plus catch points and an additional hare bonus.
 - Reset returns to character setup. Settings have a dedicated screen; runs can pause/resume.
-- Main has no persistent ranking, custom preset library, mushroom, jump, or season
-  system. F03 mushrooms are ready for PR review on a feature branch.
+- Main includes F03 mushrooms, rotating flights, adjustable squirrel distraction,
+  and easier numeric settings. Persistent rankings, custom preset libraries,
+  jumping, and seasons remain planned.
 - pnpm test passes at desktop (1280x800) and phone (390x844) sizes under
   /cone_catcher/, including F01 and local F03 rule checks. GitHub smoke and
   Pages deployment passed on assessed main. Actual deployed setup, skin selection,
@@ -45,6 +46,10 @@ proposed change and seek owner agreement. Do not execute the entire roadmap at o
 - Main protection is now verified: the active Protect main ruleset requires PRs
   and the Game smoke test with an up-to-date branch. See WORKFLOW.md for details.
 - The unpublished refactoring branch was not inspected or reused.
+- PR #5 merged on 2026-10-04. The owner reports that deployment is working,
+  with a requested follow-up to select the squirrel of the nearest tree instead
+  of the squirrel nearest the flight endpoint. Agree target timing and empty-tree
+  behavior before implementation. Device-specific phone acceptance is not inferred.
 
 ## Agreed product decisions
 
@@ -117,16 +122,18 @@ merged on 2026-10-03. Main CI, Pages deployment and actual deployed browser flow
 were verified on 2026-10-04.
 
 F03 began on 2026-10-04. Rotating mushroom flights, squirrel distraction and easier
-settings fields passed local preview and automated checks. The owner chose to skip
-Wi-Fi phone preview and leave the firewall unchanged; real-phone testing will use
-GitHub Pages after an explicitly authorized merge. Other features remain planned.
+settings fields passed local preview and automated checks. PR #5 merged, and the
+owner reports that the deployment is working except for the targeting preference.
+An independent desktop Pages check passed after a transient connection reset;
+the F03 plan records its scope. Wi-Fi phone preview was waived and the firewall
+was left unchanged. Other features remain planned.
 
 | ID | Feature and prompt | Dependencies / recommended sequencing |
 | --- | --- | --- |
 | F00 | [Screens, settings, pause and reset](features/00-screens.md) | Merged and deployment checked; PR #3 |
 | F02 | [Two skins and carousel](features/02-characters.md) | Merged and deployment checked; PR #3 |
 | F01 | [Squirrel motion and colours](features/01-squirrels.md) | Merged and deployment checked; PR #4 |
-| F03 | [Mushrooms and distraction](features/03-mushrooms.md) | Ready for PR review; post-merge phone test pending; autumn hook used later by F07 |
+| F03 | [Mushrooms and distraction](features/03-mushrooms.md) | Merged in PR #5; owner deployment feedback received; tree-targeting follow-up awaits agreement; autumn hook used later by F07 |
 | F04 | [Portrait ground controls and jumping](features/04-controls.md) | F00, F02, F03 for real mushroom-clearance tests |
 | F05 | [Difficulty pacing and hawk balance](features/05-pacing.md) | Before F06; preserve existing game rules |
 | F06 | [Difficulty presets](features/06-difficulties.md) | F05 |
@@ -142,7 +149,7 @@ added later but precedes controls/settings work. Agree any change in implementat
 
 - Approve numerical defaults and interactions immediately before each feature.
 - Confirm jump gesture behavior, including holding movement through a swipe.
-- Review F03's PR and test its deployed feel on Android Firefox after merge.
+- Agree F03's tree-targeting follow-up and confirm the Android Firefox checklist.
 - Confirm tree statistic definition and local top-five retention across alternate sorts.
 - Confirm global eligibility: recommended standard presets only, local named custom
   categories. The owner approved account-free submission, not this restriction explicitly.
@@ -153,6 +160,8 @@ added later but precedes controls/settings work. Agree any change in implementat
 
 ## Immediate next step
 
-Open and review F03's PR after local checks. Merge only on explicit owner instruction,
-then verify Pages and perform the F03 phone checklist on Android Firefox. Leave the
-firewall unchanged. Do not implement seasons yet; connect autumn-only mushroom emergence in F07.
+Agree the small F03 tree-targeting follow-up before implementation. Test a competing
+squirrel in another tree and a target removed during flight, retain pause/reset
+coverage, and preview the revised behavior before merge. Then agree F04 portrait
+ground controls and jumping. Leave the firewall unchanged. Connect autumn-only
+mushroom emergence in F07.
