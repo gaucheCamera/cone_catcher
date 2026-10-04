@@ -35,12 +35,13 @@
     .settings legend{font-weight:700;font-size:14px;margin-bottom:6px}
     .fields{display:grid;grid-template-columns:1fr 1fr;gap:7px}
     label{font-size:12px;color:var(--muted)}
-    input[type=number]{
+    input[type=text]{
       display:block;width:100%;min-height:42px;margin-top:3px;border:1px solid var(--line);
       border-radius:9px;background:#182720;color:var(--text);padding:7px 8px;font-size:16px
     }
     .check{display:flex;align-items:center;gap:7px;min-height:42px}
     .check input{width:19px;height:19px}
+    .setting-range{display:block;margin-top:3px;font-size:10px;color:var(--muted)}
     .summary{font-size:11px;color:var(--muted);margin:10px 0 0}
     .characters{display:flex;gap:12px;align-items:center;justify-content:center;touch-action:pan-y}
     .characters button{min-width:44px;font-size:22px}
@@ -91,43 +92,48 @@
     <button id="settings-back">Back to setup</button>
     <div class="settings">
       <fieldset><legend>Hawk</legend><div class="fields">
-        <label>Initial buffer (s)<input id="hawk-buffer" type="number" min="0" max="300" step="5" value="45"></label>
-        <label>Check interval (s)<input id="hawk-interval" type="number" min="1" max="120" step="1" value="10"></label>
-        <label>Chance/check (%)<input id="hawk-prob" type="number" min="0" max="100" step="5" value="25"></label>
+        <label>Initial buffer (s)<input id="hawk-buffer" type="text" inputmode="decimal" data-min="0" data-max="300" data-step="5" value="45"></label>
+        <label>Check interval (s)<input id="hawk-interval" type="text" inputmode="decimal" data-min="1" data-max="120" data-step="1" value="10"></label>
+        <label>Chance/check (%)<input id="hawk-prob" type="text" inputmode="decimal" data-min="0" data-max="100" data-step="5" value="25"></label>
         <label class="check"><input id="protect-last" type="checkbox" checked>Protect last squirrel</label>
       </div></fieldset>
 
       <fieldset><legend>Squirrel throws</legend><div class="fields">
-        <label>Fastest base (s)<input id="throw-min" type="number" min="0.3" max="10" step="0.05" value="1.55"></label>
-        <label>Slowest base (s)<input id="throw-max" type="number" min="0.3" max="12" step="0.05" value="3.20"></label>
-        <label>Difficulty ramp (s)<input id="ramp-time" type="number" min="10" max="600" step="10" value="140"></label>
-        <label>Late-game rate (%)<input id="ramp-floor" type="number" min="10" max="100" step="5" value="43"></label>
+        <label>Fastest base (s)<input id="throw-min" type="text" inputmode="decimal" data-min="0.3" data-max="10" data-step="0.05" value="1.55"></label>
+        <label>Slowest base (s)<input id="throw-max" type="text" inputmode="decimal" data-min="0.3" data-max="12" data-step="0.05" value="3.20"></label>
+        <label>Difficulty ramp (s)<input id="ramp-time" type="text" inputmode="decimal" data-min="10" data-max="600" data-step="10" value="140"></label>
+        <label>Late-game rate (%)<input id="ramp-floor" type="text" inputmode="decimal" data-min="10" data-max="100" data-step="5" value="43"></label>
       </div></fieldset>
 
       <fieldset><legend>Thrown objects</legend><div class="fields">
-        <label>Baby hare (%)<input id="hare" type="number" min="0" max="50" step="0.5" value="3.5"></label>
-        <label>Green cones (%)<input id="green" type="number" min="0" max="100" step="1" value="46"></label>
-        <label>Green gravity<input id="green-g" type="number" min="100" max="800" step="10" value="340"></label>
-        <label>Brown gravity<input id="brown-g" type="number" min="80" max="600" step="10" value="215"></label>
+        <label>Baby hare (%)<input id="hare" type="text" inputmode="decimal" data-min="0" data-max="50" data-step="0.5" value="3.5"></label>
+        <label>Green cones (%)<input id="green" type="text" inputmode="decimal" data-min="0" data-max="100" data-step="1" value="46"></label>
+        <label>Green gravity<input id="green-g" type="text" inputmode="decimal" data-min="100" data-max="800" data-step="10" value="340"></label>
+        <label>Brown gravity<input id="brown-g" type="text" inputmode="decimal" data-min="80" data-max="600" data-step="10" value="215"></label>
       </div></fieldset>
 
       <fieldset><legend>Tree recruitment</legend><div class="fields">
-        <label>Brown germination (%)<input id="germ" type="number" min="0" max="100" step="1" value="46"></label>
-        <label>Cache min (s)<input id="cache-min" type="number" min="0" max="30" step="0.5" value="2.5"></label>
-        <label>Cache max (s)<input id="cache-max" type="number" min="0" max="30" step="0.5" value="5.5"></label>
-        <label>Sapling min (s)<input id="sap-min" type="number" min="1" max="30" step="0.5" value="4.5"></label>
-        <label>Sapling max (s)<input id="sap-max" type="number" min="1" max="30" step="0.5" value="6.3"></label>
+        <label>Brown germination (%)<input id="germ" type="text" inputmode="decimal" data-min="0" data-max="100" data-step="1" value="46"></label>
+        <label>Cache min (s)<input id="cache-min" type="text" inputmode="decimal" data-min="0" data-max="30" data-step="0.5" value="2.5"></label>
+        <label>Cache max (s)<input id="cache-max" type="text" inputmode="decimal" data-min="0" data-max="30" data-step="0.5" value="5.5"></label>
+        <label>Sapling min (s)<input id="sap-min" type="text" inputmode="decimal" data-min="1" data-max="30" data-step="0.5" value="4.5"></label>
+        <label>Sapling max (s)<input id="sap-max" type="text" inputmode="decimal" data-min="1" data-max="30" data-step="0.5" value="6.3"></label>
+      </div></fieldset>
+
+      <fieldset><legend>Mushrooms</legend><div class="fields">
+        <label>Emergence (s; 0 = off)<input id="mushroom-interval" type="text" inputmode="decimal" data-min="0" data-max="120" data-step="1" value="8"></label>
+        <label>Distraction (s)<input id="mushroom-distraction" type="text" inputmode="decimal" data-min="5" data-max="60" data-step="1" value="5"></label>
       </div></fieldset>
 
       <fieldset><legend>Player</legend><div class="fields">
-        <label>Maximum bonks<input id="max-bonks" type="number" min="1" max="9" step="1" value="3"></label>
-        <label>Bonk immunity (s)<input id="immunity" type="number" min="0" max="5" step="0.05" value="1.25"></label>
+        <label>Maximum bonks<input id="max-bonks" type="text" inputmode="decimal" data-min="1" data-max="9" data-step="1" value="3"></label>
+        <label>Bonk immunity (s)<input id="immunity" type="text" inputmode="decimal" data-min="0" data-max="5" data-step="0.05" value="1.25"></label>
       </div></fieldset>
 
       <fieldset><legend>Scoring</legend><div class="fields">
-        <label>Catch points<input id="catch-points" type="number" min="0" max="1000" step="25" value="125"></label>
-        <label>Hare bonus<input id="hare-points" type="number" min="0" max="1000" step="25" value="75"></label>
-        <label>Survival pts/s<input id="survival" type="number" min="0" max="100" step="1" value="12"></label>
+        <label>Catch points<input id="catch-points" type="text" inputmode="decimal" data-min="0" data-max="1000" data-step="25" value="125"></label>
+        <label>Hare bonus<input id="hare-points" type="text" inputmode="decimal" data-min="0" data-max="1000" data-step="25" value="75"></label>
+        <label>Survival pts/s<input id="survival" type="text" inputmode="decimal" data-min="0" data-max="100" data-step="1" value="12"></label>
       </div></fieldset>
     </div>
     <p class="summary" id="settings-summary">Settings lock when a run begins.</p>
@@ -191,13 +197,25 @@ const scoreEl=$('#score'),caughtEl=$('#caught'),bonksEl=$('#bonks'),bonkMaxEl=$(
       treesEl=$('#trees'),squirrelsEl=$('#squirrels'),playerEl=$('#player'),statusEl=$('#status'),
       summaryEl=$('#settings-summary');
 const settingInputs=[...document.querySelectorAll('#settings-screen input')];
+for(const el of settingInputs.filter(el=>el.type==='text')){
+  const hint=document.createElement('small');hint.className='setting-range';hint.id=el.id+'-range';
+  hint.textContent=el.dataset.min+'–'+el.dataset.max;el.after(hint);
+  el.setAttribute('aria-describedby',hint.id);
+  let selectOnClick=false;
+  // Select on the first tap/focus so a large value can be replaced in one edit.
+  el.addEventListener('focus',()=>{el.select();selectOnClick=true});
+  el.addEventListener('click',()=>{if(selectOnClick){el.select();selectOnClick=false}});
+  el.addEventListener('keydown',()=>selectOnClick=false);
+  el.addEventListener('blur',()=>selectOnClick=false);
+}
 const characterIds=['jack','cristian'],selector=$('#characters'),preview=$('#character-preview');
 const reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 let W=620,H=340,DPR=1,groundY=307,state='ready',elapsed=0,caught=0,bonks=0,bonus=0,finalScore=0,invuln=0;
 let playerX=310,targetX=310,facing=1,moveDir=0,selected='jack',
-    trees=[],squirrels=[],objects=[],caches=[],saplings=[],particles=[],hares=[],catchAnims=[],
+    trees=[],squirrels=[],objects=[],caches=[],saplings=[],particles=[],hares=[],catchAnims=[],mushrooms=[],
     last=0,raf=0,nextHawkCheck=45;
+let nextMushroomAt=8,mushroomSeason=null;
 let hawk={active:false,t:0,duration:1.55,target:null,carrying:null,grabbed:false,startX:0,startY:0,grabX:0,grabY:0,endX:0,endY:0,dir:1};
 const cfg={};
 
@@ -228,6 +246,7 @@ const squirrelMotion={speed:50,stepMin:14,stepMax:28,horizontalMaxScale:3,pauseM
 const squirrelDirections=[[1,0],[-1,0],[0,1],[0,-1],
   [Math.SQRT1_2,Math.SQRT1_2],[-Math.SQRT1_2,Math.SQRT1_2],
   [Math.SQRT1_2,-Math.SQRT1_2],[-Math.SQRT1_2,-Math.SQRT1_2]];
+const mushroomRules={groundLimit:3,radius:5,flightDuration:.8};
 
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),
       smooth=t=>t*t*(3-2*t),
@@ -237,8 +256,10 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),
       scoreNow=()=>Math.floor(elapsed*cfg.survival)+bonus;
 
 function num(id,min,max,fallback){
-  const el=$(id),v=Number(el.value),x=clamp(Number.isFinite(v)?v:fallback,min,max);
-  el.value=String(x); return x;
+  const el=$(id),raw=el.value.trim().replace(',','.'),v=raw===''?NaN:Number(raw),
+    previous=Number(el.dataset.savedValue??fallback),
+    x=clamp(Number.isFinite(v)?v:previous,min,max);
+  el.value=String(x);el.dataset.savedValue=el.value;return x;
 }
 
 function readSettings(){
@@ -249,7 +270,10 @@ function readSettings(){
 
   cfg.throwMin=num('#throw-min',.3,10,1.55);
   cfg.throwMax=num('#throw-max',.3,12,3.2);
-  if(cfg.throwMax<cfg.throwMin){cfg.throwMax=cfg.throwMin;$('#throw-max').value=cfg.throwMax}
+  if(cfg.throwMax<cfg.throwMin){
+    cfg.throwMax=cfg.throwMin;$('#throw-max').value=cfg.throwMax;
+    $('#throw-max').dataset.savedValue=String(cfg.throwMax);
+  }
   cfg.rampTime=num('#ramp-time',10,600,140);
   cfg.rampFloor=num('#ramp-floor',10,100,43)/100;
 
@@ -261,11 +285,19 @@ function readSettings(){
   cfg.germ=num('#germ',0,100,46)/100;
   cfg.cacheMin=num('#cache-min',0,30,2.5);
   cfg.cacheMax=num('#cache-max',0,30,5.5);
-  if(cfg.cacheMax<cfg.cacheMin)cfg.cacheMax=cfg.cacheMin;
+  if(cfg.cacheMax<cfg.cacheMin){
+    cfg.cacheMax=cfg.cacheMin;$('#cache-max').value=cfg.cacheMax;
+    $('#cache-max').dataset.savedValue=String(cfg.cacheMax);
+  }
   cfg.sapMin=num('#sap-min',1,30,4.5);
   cfg.sapMax=num('#sap-max',1,30,6.3);
-  if(cfg.sapMax<cfg.sapMin)cfg.sapMax=cfg.sapMin;
+  if(cfg.sapMax<cfg.sapMin){
+    cfg.sapMax=cfg.sapMin;$('#sap-max').value=cfg.sapMax;
+    $('#sap-max').dataset.savedValue=String(cfg.sapMax);
+  }
 
+  cfg.mushroomInterval=num('#mushroom-interval',0,120,8);
+  cfg.mushroomDistraction=num('#mushroom-distraction',5,60,5);
   cfg.maxBonks=Math.round(num('#max-bonks',1,9,3));
   cfg.immunity=num('#immunity',0,5,1.25);
   cfg.catchPoints=Math.round(num('#catch-points',0,1000,125));
@@ -282,7 +314,7 @@ function makeSquirrel(treeIndex){
     traveling:false,mode:'scamper',nextJourney:false,journeyY:null,
     scamperWait:rand(squirrelMotion.scamperMin,squirrelMotion.scamperMax),
     rest:rand(squirrelMotion.pauseMin,squirrelMotion.pauseMax),
-    timer:rand(cfg.throwMin,cfg.throwMax),pause:0,color:squirrelPalette[Math.floor(Math.random()*squirrelPalette.length)]};
+    timer:rand(cfg.throwMin,cfg.throwMax),pause:0,distracted:0,color:squirrelPalette[Math.floor(Math.random()*squirrelPalette.length)]};
   const b=sBounds(s);s.y=rand(b.min,b.max);
   const half=sWidth(s,s.y);s.x=rand(-half,half);s.targetX=s.x;s.targetY=s.y;
   return s;
@@ -384,7 +416,8 @@ function reset(){
   readSettings();
   elapsed=0;caught=0;bonks=0;bonus=0;finalScore=0;invuln=0;
   nextHawkCheck=cfg.hawkBuffer;
-  objects=[];caches=[];saplings=[];particles=[];hares=[];catchAnims=[];
+  nextMushroomAt=cfg.mushroomInterval;mushroomSeason=null;
+  objects=[];caches=[];saplings=[];particles=[];hares=[];catchAnims=[];mushrooms=[];
   hawk.active=false;hawk.target=null;hawk.carrying=null;hawk.grabbed=false;
   playerX=W/2;targetX=playerX;facing=1;moveDir=0;
   trees=[
@@ -557,8 +590,85 @@ function throwInterval(){
 function updateSquirrel(s,dt){
   s.pause=Math.max(0,s.pause-dt);
   if(s.pause<=0)moveSquirrel(s,dt);
-  s.timer-=dt;
+  // Distraction blocks throws, not movement. Only unblocked time advances the throw clock.
+  const blocked=Math.min(dt,s.distracted);
+  s.distracted=Math.max(0,s.distracted-dt);
+  const throwingTime=dt-blocked;
+  if(throwingTime<=0)return;
+  s.timer-=throwingTime;
   if(s.timer<=0){toss(s);s.timer=throwInterval()}
+}
+
+function mushroomsAllowed(){
+  // null enables the functionality preview; the future season clock sets a real season.
+  return mushroomSeason===null||mushroomSeason==='autumn';
+}
+function setMushroomSeason(season){
+  mushroomSeason=season;
+  if(!mushroomsAllowed())mushrooms=[];
+  nextMushroomAt=elapsed+cfg.mushroomInterval;
+}
+function spawnMushroom(){
+  if(!mushroomsAllowed()||!cfg.mushroomInterval||
+     mushrooms.filter(m=>m.state==='grounded').length>=mushroomRules.groundLimit)return null;
+  for(let attempt=0;attempt<8;attempt++){
+    const x=rand(16,W-16);
+    if(mushrooms.some(m=>m.state==='grounded'&&Math.abs(m.x-x)<20))continue;
+    const m={state:'grounded',x,y:groundY-6,age:0,rot:0,
+      color:Math.random()<.5?'#898477':'#8b7058'};
+    mushrooms.push(m);return m;
+  }
+  return null;
+}
+function launchMushroom(m){
+  if(m.state!=='grounded')return;
+  m.state='airborne';m.age=0;m.startX=m.x;m.startY=groundY-6;
+  m.endX=clamp(m.x+rand(-40,40),16,W-16);
+  const tree=trees.reduce((nearest,t)=>!nearest||Math.abs(t.x-m.endX)<Math.abs(nearest.x-m.endX)?t:nearest,null);
+  // The bottom of the ninth drawn foliage triangle sets the short flight's height.
+  const leafBase=tree?treeTop(tree)+tree.h*.656+40:groundY-70;
+  m.endY=clamp(leafBase+rand(-4,8),16,m.startY-16);m.drift=rand(-14,14);
+  m.spin=(Math.random()<.5?-1:1)*rand(1,1.5)*Math.PI*2/mushroomRules.flightDuration;
+}
+function distractNearestSquirrel(m){
+  let nearest=null,distance=Infinity;
+  for(const s of squirrels){
+    const p=sPos(s),d=Math.hypot(p.x-m.x,p.y-m.y);
+    if(d<distance){nearest=s;distance=d}
+  }
+  if(!nearest)return;
+  // Repeat hits refresh the effect. A fresh throw interval prevents a queued volley on expiry.
+  nearest.distracted=cfg.mushroomDistraction;nearest.timer=throwInterval();
+  burst(m.x,m.y,6,'#c4b8a1');
+}
+function mushroomContact(m,previousX){
+  const b=bodyBounds(),halfWidth=chars[selected].w*.38,r=mushroomRules.radius;
+  // Sweep the body's horizontal travel so a quick crossing cannot skip a small mushroom.
+  return m.x+r>Math.min(previousX,playerX)-halfWidth&&
+    m.x-r<Math.max(previousX,playerX)+halfWidth&&
+    groundY-6+r>b.y1&&groundY-6-r<b.y2;
+}
+function updateMushrooms(dt,previousX=playerX){
+  if(!mushroomsAllowed()){mushrooms=[];return}
+  for(let i=mushrooms.length-1;i>=0;i--){
+    const m=mushrooms[i];
+    if(m.state==='grounded'){
+      m.y=groundY-6;
+      if(mushroomContact(m,previousX))launchMushroom(m);
+      continue;
+    }
+    m.age=Math.min(mushroomRules.flightDuration,m.age+dt);
+    const t=m.age/mushroomRules.flightDuration;
+    m.x=clamp(lerp(m.startX,m.endX,t)+Math.sin(t*Math.PI*2)*m.drift,16,W-16);
+    m.y=lerp(m.startY,m.endY,t)-Math.sin(t*Math.PI)*10;
+    m.rot=m.spin*m.age;
+    if(t>=1){distractNearestSquirrel(m);mushrooms.splice(i,1)}
+  }
+  if(cfg.mushroomInterval>0&&elapsed>=nextMushroomAt){
+    spawnMushroom();
+    // Keep one emergence per interval even when full; never accumulate a spawn backlog.
+    nextMushroomAt=elapsed+cfg.mushroomInterval;
+  }
 }
 
 function burst(x,y,n,color){
@@ -593,9 +703,13 @@ function basketBounds(){
   const b=basketGeometry();
   return{x1:b.cx-b.w*.52,x2:b.cx+b.w*.52,y1:b.cy-b.h*.55,y2:b.cy+b.h*.55};
 }
-function bodyHit(p){
+function bodyBounds(){
   const ch=chars[selected];
-  return p.x+p.r>playerX-ch.w*.38&&p.x-p.r<playerX+ch.w*.38&&p.y+p.r>groundY-ch.h&&p.y-p.r<groundY-4;
+  return{x1:playerX-ch.w*.38,x2:playerX+ch.w*.38,y1:groundY-ch.h,y2:groundY-4};
+}
+function bodyHit(p){
+  const b=bodyBounds();
+  return p.x+p.r>b.x1&&p.x-p.r<b.x2&&p.y+p.r>b.y1&&p.y-p.r<b.y2;
 }
 
 function catchCone(i){
@@ -647,12 +761,14 @@ function checkHawk(){
 function update(dt){
   elapsed+=dt;invuln=Math.max(0,invuln-dt);checkHawk();updateHawk(dt);
 
+  const previousX=playerX;
   const speed=Math.max(270,W*.52);
   if(moveDir){targetX+=moveDir*speed*dt;facing=moveDir}
   targetX=clamp(targetX,16,W-16);
   playerX+=(targetX-playerX)*Math.min(1,dt*17);
 
   squirrels.slice().forEach(s=>updateSquirrel(s,dt));
+  updateMushrooms(dt,previousX);
   const b=basketBounds();
 
   for(let i=objects.length-1;i>=0;i--){
@@ -801,7 +917,23 @@ function drawSquirrelAt(p,s,scale=.56){
   ctx.fillStyle=s.color.dark;ctx.beginPath();ctx.arc(8,-7,1.1,0,6.28);ctx.fill();
   ctx.restore();
 }
-function drawSquirrel(s){drawSquirrelAt(sPos(s),s,.56)}
+function drawSquirrel(s){
+  const p=sPos(s);drawSquirrelAt(p,s,.56);
+  if(s.distracted>0){
+    ctx.fillStyle='#d9cfae';ctx.font='bold 13px system-ui';ctx.textAlign='center';
+    ctx.fillText('…',p.x,p.y-17);
+  }
+}
+
+function drawMushroom(m){
+  ctx.save();ctx.translate(m.x,m.y);ctx.rotate(m.rot);
+  rr(-1.8,-1,3.6,7,1.5,'#c0b7a1','#5a5045',.6);
+  ctx.fillStyle=m.color;ctx.strokeStyle='#51483f';ctx.lineWidth=.7;
+  ctx.beginPath();ctx.moveTo(-7,0);ctx.bezierCurveTo(-7,-9,7,-9,7,0);
+  ctx.quadraticCurveTo(0,3,-7,0);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#bdb5a2';ctx.beginPath();ctx.ellipse(-2,-4,1.6,.8,-.3,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+}
 
 function drawConeSprite(x,y,type,rot,scale=1){
   const body=type==='green'?C.green:C.brown,detail=type==='green'?C.green2:C.brown2;
@@ -930,10 +1062,12 @@ function draw(now=0){
   for(const l of layers)l.kind==='tree'?drawTree(l.obj,now):drawSapling(l.obj);
 
   caches.forEach(drawCache);
+  mushrooms.filter(m=>m.state==='grounded').forEach(drawMushroom);
   squirrels.forEach(drawSquirrel);
   objects.forEach(o=>o.kind==='hare'?drawHare(o):drawCone(o));
   hares.forEach(drawRunHare);
   drawPlayer(now);
+  mushrooms.filter(m=>m.state==='airborne').forEach(drawMushroom);
   catchAnims.forEach(drawCatchAnim);
   drawHawk(now);
 

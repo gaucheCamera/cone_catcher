@@ -56,3 +56,7 @@ package.json before adding or changing them. Test affected rules and a running
 local game, at desktop and phone viewport sizes. Serve assets under /cone_catcher/.
 Provide a concrete real-phone test for each gameplay PR and wait for owner feedback
 before merge. Distinguish local results, GitHub checks, and the actual deployment.
+
+F03 exception agreed on 2026-10-04: skip Wi-Fi phone preview, leave the firewall
+unchanged, and perform the owner's Android Firefox test on GitHub Pages after
+an explicitly authorized merge. Local desktop and phone-size checks still apply.

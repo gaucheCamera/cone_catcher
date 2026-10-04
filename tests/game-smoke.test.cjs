@@ -19,7 +19,9 @@ test('game loads and runs from the GitHub Pages path at desktop and phone widths
   const html = (await readFile(gamePath, 'utf8')).replace('})();', `
     window.gameTest = {
       snapshot: () => ({ state, elapsed, playerX, targetX, selected, moveDir,
-        caught, bonks, finalScore, trees: trees.length, objects: objects.length }),
+        caught, bonks, finalScore, trees: trees.length, objects: objects.length,
+        mushrooms: mushrooms.map(m => ({ ...m })),
+        distraction: squirrels.map(s => s.distracted), nextMushroomAt }),
       geometry: () => ({ body: { w: chars[selected].w, h: chars[selected].h }, basket: basketBounds(), playerX, groundY }),
       bodyHit, choose,
       squirrel: { make: makeSquirrel, bounds: sBounds, width: sWidth, position: sPos,
@@ -28,6 +30,12 @@ test('game loads and runs from the GitHub Pages path at desktop and phone widths
         draw: drawSquirrel, toss, launchHawk, reset,
         get population() { return squirrels }, get objects() { return objects },
         get trees() { return trees }, get hawk() { return hawk } },
+      mushroom: { spawn: spawnMushroom, launch: launchMushroom, update: updateMushrooms,
+        contact: mushroomContact, distract: distractNearestSquirrel, season: setMushroomSeason,
+        reset, get list() { return mushrooms }, get config() { return cfg },
+        advance: dt => { elapsed += dt; updateMushrooms(dt) },
+        player: (id, x) => { selected=id; playerX=x; targetX=x },
+        get ground() { return groundY }, get width() { return W } },
       lose: () => {
         objects = [{ kind: 'cone', type: 'green', x: playerX, y: groundY-10,
           r: 2, vx: 0, vy: 0, g: 340, spin: 0, rot: 0 }];
@@ -346,6 +354,192 @@ test('game loads and runs from the GitHub Pages path at desktop and phone widths
         return failures;
       });
       assert.deepEqual(motionFailures, [], `squirrel rule failures at ${viewport.width}px`);
+
+      const mushroomFailures = await page.evaluate(() => {
+        const rule=gameTest.mushroom,motion=gameTest.squirrel,failures=[];
+        const check=(condition,message)=>{if(!condition)failures.push(message)};
+        const originalRandom=Math.random,originalSkin=gameTest.snapshot().selected;
+        const cfg=rule.config;
+        Math.random=()=>.1;
+        try {
+          rule.reset();cfg.mushroomInterval=0;
+          rule.advance(40);
+          check(rule.list.length===0&&rule.spawn()===null,'zero emergence disables spawning');
+
+          rule.reset();rule.advance(7.999);
+          check(rule.list.length===0,'no mushrooms before the eight-second interval');
+          rule.advance(.001);
+          check(rule.list.length===1,'first mushroom emerges at eight seconds');
+          check(rule.list[0].x>=16&&rule.list[0].x<=rule.width-16,'emergence stays on playable ground');
+
+          rule.reset();
+          for(const random of [.1,.3,.8]){Math.random=()=>random;rule.spawn()}
+          check(rule.list.length===3&&rule.spawn()===null,'grounded population is capped at three');
+          rule.advance(80);
+          check(rule.list.length===3,'long steps and full ground do not accumulate a spawn backlog');
+          rule.list.pop();rule.advance(.01);
+          check(rule.list.length===2,'freeing a space waits for the next interval');
+          rule.advance(8);
+          check(rule.list.length===3,'emergence resumes at the next interval');
+
+          for(const random of [0,.5,.99]){
+            rule.reset();Math.random=()=>random;
+            const shortFlight=rule.spawn();rule.launch(shortFlight);
+            check(shortFlight.endY>=rule.ground*.65,'flight endpoint stays near the lower foliage');
+            for(let step=0;step<7;step++){
+              rule.update(.1);
+              check(shortFlight.y>=rule.ground*.65,'flight never rises into the upper canopy');
+            }
+          }
+
+          rule.reset();Math.random=()=>.5;
+          const flying=rule.spawn();
+          rule.update(0);
+          check(flying.state==='airborne','player contact launches a grounded mushroom');
+          rule.update(.4);
+          const halfway={...flying};rule.launch(flying);
+          check(JSON.stringify(halfway)===JSON.stringify(flying),'contact cannot relaunch an airborne mushroom');
+          check(flying.y<flying.startY&&Math.abs(flying.rot)>1,'flight rises and rotates visibly');
+          check(rule.list.length===1,'one contact keeps a single flight');
+          const nearest=motion.population[1],endpoint=motion.position(nearest);
+          flying.endX=endpoint.x;flying.endY=endpoint.y;
+          rule.update(.4);
+          check(rule.list.length===0,'mushroom disappears at flight completion');
+          check(nearest.distracted===5&&motion.population[0].distracted===0,
+            'completion distracts the nearest current squirrel');
+
+          nearest.distracted=1;
+          rule.distract(endpoint);
+          check(nearest.distracted===5,'repeat impacts refresh rather than stack distraction');
+          cfg.mushroomDistraction=9;rule.distract(endpoint);
+          check(nearest.distracted===9,'custom distraction duration is used at impact');
+          cfg.mushroomDistraction=5;rule.distract(endpoint);
+          nearest.x=0;nearest.targetX=0;nearest.targetY=nearest.y+10;
+          nearest.traveling=true;nearest.mode='journey';nearest.journeyY=nearest.targetY;
+          nearest.scamperWait=2;nearest.pause=0;
+          const y=nearest.y,timer=nearest.timer,count=motion.objects.length;
+          motion.update(nearest,.1);
+          check(nearest.y!==y,'distracted squirrels continue moving');
+          check(nearest.timer===timer&&motion.objects.length===count,'distraction freezes the throw clock');
+          motion.update(nearest,nearest.distracted);
+          check(nearest.distracted===0&&motion.objects.length===count,'no throw occurs during distraction');
+          motion.update(nearest,timer/2);
+          check(motion.objects.length===count,'expiry does not cause an immediate queued throw');
+          motion.update(nearest,timer/2+.001);
+          check(motion.objects.length===count+1,'normal throwing resumes with one projectile');
+          nearest.distracted=.25;nearest.timer=.5;
+          motion.update(nearest,.5);
+          check(Math.abs(nearest.timer-.25)<1e-8,'an expiry-crossing step counts only unblocked time');
+
+          rule.reset();
+          const removed=motion.population[0],removedPoint=motion.position(removed),survivor=motion.population[1];
+          const afterRemoval=rule.spawn();rule.launch(afterRemoval);
+          afterRemoval.endX=removedPoint.x;afterRemoval.endY=removedPoint.y;
+          motion.population.splice(0,1);rule.update(10);
+          check(removed.distracted===0&&survivor.distracted===5,
+            'a squirrel removed during flight cannot receive the distraction');
+          const emptyFlight=rule.spawn();rule.launch(emptyFlight);motion.population.length=0;
+          rule.update(10);
+          check(rule.list.length===0,'flight completion without squirrels is safe');
+
+          rule.reset();
+          for(const [id,width] of [['jack',17],['cristian',16]]){
+            rule.player(id,rule.width/2);
+            const mushroom={x:rule.width/2+width*.38+5-.01};
+            check(rule.contact(mushroom,rule.width/2),id+' contacts at its own body edge');
+            mushroom.x+=.02;
+            check(!rule.contact(mushroom,rule.width/2),id+' does not contact beyond its own body edge');
+            rule.player(id,rule.width*.7);
+            check(rule.contact({x:rule.width*.5},rule.width*.3),id+' cannot skip mushrooms during fast crossings');
+          }
+          rule.player(originalSkin,rule.width/2);
+
+          for(const season of ['spring','summer','winter']){
+            rule.reset();const unfinished=rule.spawn();rule.launch(unfinished);
+            rule.season(season);rule.advance(16);
+            check(rule.list.length===0&&rule.spawn()===null,season+' excludes mushrooms');
+            check(motion.population.every(s=>s.distracted===0),season+' clears flights without distractions');
+          }
+          rule.season('autumn');rule.advance(8);
+          check(rule.list.length===1,'the future autumn hook enables emergence');
+          rule.reset();
+          check(rule.list.length===0&&motion.population.every(s=>s.distracted===0),'reset clears mushrooms and distractions');
+          rule.advance(8);
+          check(rule.list.length===1,'reset starts a fresh eight-second functionality preview');
+        } finally {
+          Math.random=originalRandom;rule.player(originalSkin,rule.width/2);rule.reset();
+        }
+        return failures;
+      });
+      assert.deepEqual(mushroomFailures, [], `mushroom rule failures at ${viewport.width}px`);
+
+      await page.locator('#restart').click();
+      await page.locator('#start').click();
+      await page.evaluate(() => {
+        const rule=gameTest.mushroom,m=rule.spawn();
+        rule.launch(m);rule.update(.2);gameTest.squirrel.population[0].distracted=5;
+      });
+      await page.locator('#pause').click();
+      const pausedFlight=await snapshot();
+      assert.equal(pausedFlight.mushrooms[0].state,'airborne');
+      await page.clock.runFor(1500);
+      assert.deepEqual(await snapshot(),pausedFlight,'pause freezes flight, rotation, emergence and distraction');
+      await page.locator('#resume').click();
+      await page.clock.runFor(100);
+      assert.ok((await snapshot()).mushrooms[0].age>pausedFlight.mushrooms[0].age,'resume advances the flight');
+      await page.locator('#restart').click();
+      assert.deepEqual((await snapshot()).mushrooms,[],'UI reset removes the flying mushroom');
+      assert.deepEqual((await snapshot()).distraction,[0,0],'UI reset removes all distraction');
+
+      await page.locator('#settings-open').click();
+      await page.locator('#mushroom-interval').fill('0');
+      await page.locator('#settings-back').click();
+      await page.locator('#start').click();
+      await page.evaluate(() => gameTest.squirrel.population.forEach(s=>s.timer=Infinity));
+      await page.clock.runFor(17000);
+      assert.deepEqual((await snapshot()).mushrooms,[],'Off in Settings disables emergence in the running game');
+      await page.locator('#restart').click();
+      await page.locator('#settings-open').click();
+      const distraction=page.locator('#mushroom-distraction');
+      await distraction.fill('60');
+      await page.locator('#settings-back').click();
+      await page.locator('#settings-open').click();
+      await distraction.click();
+      assert.deepEqual(await distraction.evaluate(el=>[el.selectionStart,el.selectionEnd]),[0,2],
+        'first focus selects the entire maximum value for easy replacement');
+      await page.keyboard.type('5');
+      assert.equal(await distraction.inputValue(),'5','typing replaces the maximum with the minimum');
+      await distraction.fill('');
+      await page.locator('#max-bonks').click();
+      assert.equal(await distraction.inputValue(),'','blank fields stay editable while changing focus');
+      await distraction.fill('7,5');
+      await page.locator('#settings-back').click();
+      assert.equal(await distraction.inputValue(),'7.5','decimal comma is accepted');
+      await page.locator('#settings-open').click();
+      await distraction.fill('');
+      await page.locator('#settings-back').click();
+      assert.equal(await distraction.inputValue(),'7.5','blank input retains the previous value');
+      await page.locator('#settings-open').click();
+      await distraction.fill('bad');
+      await page.locator('#settings-back').click();
+      assert.equal(await distraction.inputValue(),'7.5','invalid input retains the previous value');
+      await page.locator('#settings-open').click();
+      await distraction.fill('1');
+      assert.equal(await distraction.inputValue(),'1','limits are not forced while typing');
+      await page.locator('#settings-back').click();
+      assert.equal(await distraction.inputValue(),'5','five-second minimum is applied on leaving settings');
+      await page.locator('#settings-open').click();
+      await distraction.fill('1000');
+      await page.locator('#settings-back').click();
+      assert.equal(await distraction.inputValue(),'60','upper limit is applied on leaving settings');
+      if(viewport.width<720){
+        await page.locator('#settings-open').click();await distraction.tap();
+        assert.deepEqual(await distraction.evaluate(el=>[el.selectionStart,el.selectionEnd]),[0,2],
+          'a touch tap selects the whole value for replacement');
+        await page.keyboard.type('5');
+        assert.equal(await distraction.inputValue(),'5','touch focus can replace a maximum with a minimum');
+        await page.locator('#settings-back').click();
+      }
       assert.deepEqual(errors, [], `browser errors at ${viewport.width}px`);
       await page.close();
     }

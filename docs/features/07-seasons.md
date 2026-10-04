@@ -10,7 +10,9 @@ summer -> autumn -> winter. Easy winter advances to Medium spring; Medium winter
 to Hard spring; Hard winter lasts indefinitely. Starting Medium/Hard skips earlier
 cycles. Preserve score, total play time, and the existing population.
 Summer: sun moves across the sky and the player moves somewhat slower.
-Autumn: autumn colours and intermittent wind drifting airborne cones.
+Autumn: autumn colours, intermittent wind drifting airborne cones, and mushrooms
+emerging every 8 seconds by default. The owner clarified on 2026-10-04 that
+mushrooms appear only in autumn, replacing the earlier winter-only exclusion.
 Winter: winter colours, intermittent wind, slippery momentum, and no mushrooms.
 Show season and current difficulty. Paused/background time must not skip seasons.
 Proposed: wind affects cones only, not hares/mushrooms; movement penalties never
@@ -23,7 +25,7 @@ total run time. Numerical effects and transition smoothing need approval.
 2. First PR: implement/test a pure season/difficulty clock and HUD using active simulation time; include exact boundary cases.
 3. Second PR: add spring/summer/autumn palette and sun transitions plus agreed heat effect.
 4. Third PR: add time-based intermittent wind with adjustable frequency/strength/duration, affecting airborne cones only.
-5. Fourth PR: add winter palette, slippery movement, mushroom suppression, and infinite Hard winter.
+5. Fourth PR: add winter palette, slippery movement, autumn-only mushroom permission (clear mushrooms safely on leaving autumn), and infinite Hard winter.
 6. Apply difficulty transitions without calling the new-run reset; preserve entities, score, and total time while updating intended parameters.
 7. Exercise long runs with accelerated test clocks; document population/performance limits before introducing gameplay-affecting caps.
 
@@ -36,7 +38,7 @@ large time steps, pause/resume, starting Medium/Hard, custom duration, and infin
 Hard winter. Preserve score/population and avoid retroactive score recalculation
 if scoring rates ever differ between presets.
 Physics tests: heat changes speed, wind affects only airborne cones, ice responds
-consistently across time steps, and winter disables mushrooms.
+consistently across time steps, and mushrooms appear only in autumn.
 Phone: use a temporary short local season duration to inspect transitions, then
 standard timing for balance; test ice stop/reversal and jump landing. Custom
 accelerated runs must not be presented as standard global scores.

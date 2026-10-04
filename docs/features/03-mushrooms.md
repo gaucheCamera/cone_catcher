@@ -1,60 +1,88 @@
 # F03: Ground mushrooms and squirrel distraction
 
-Status: planned / awaiting detailed design review. Implementation PR: none.
-Dependencies: F00 for settings; F07 later uses the winter gate. F04 adds avoidance by jumping.
+Status: ready-for-review; local checks complete, post-merge phone test pending.
+Implementation PR: pending creation.
+Dependencies: merged F00/F02/F01; F07 later connects autumn-only emergence. F04 adds jumping.
 
 ## Intended behavior and decisions
 
-Agreed: small grey/brown mushrooms occasionally emerge from the ground. Player
-contact launches one generally upward, with a little random sideways motion and
-a small arc/loop. At flight completion it disappears and the nearest squirrel,
-or one in the nearest tree, stops throwing cones for a time. No mushrooms in winter.
-Emergence rate is adjustable.
-Proposed defaults for review: average one emergence every 8 seconds, 0 to disable,
-maximum three grounded mushrooms, flight lasting 0.8 seconds, distraction 3 seconds.
-Select the nearest active squirrel to the flight endpoint at completion; if none
-exists, just disappear. Proposed repeat hits refresh rather than add durations.
-Proposed winter entry removes grounded/in-flight mushrooms without new distractions.
-Confirm these proposed rules before coding.
+Owner direction on 2026-10-04: begin the functionality preview, rotate mushrooms
+during flight, and preview here before making a commit or opening a PR.
+On 2026-10-04 the owner chose to skip Wi-Fi phone preview, leave the firewall
+unchanged, and test on Android Firefox through GitHub Pages after merge.
+opening_prompt.md is the owner's reference file and must remain untouched/untracked.
+
+Small grey/brown mushrooms emerge on the playable ground. Contact with either
+skin launches a mushroom once, upward to the base of the nearest tree's leaves,
+with a small sideways arc and one to one-and-a-half rotations over 0.8 seconds.
+At completion it disappears and
+the nearest remaining squirrel stops throwing for 5 seconds while continuing to
+move. A small ellipsis above that squirrel identifies the distraction.
+
+The functionality preview enables emergence from the start. The owner clarified
+that future season integration must allow mushrooms only in autumn, not spring,
+summer or winter. Autumn's emergence interval is 8 seconds. This replaces the
+earlier all-seasons-except-winter plan; no season clock is implemented in F03.
+
+Preview defaults carried forward from the proposed plan: three grounded mushrooms
+maximum, 0.8-second flight, and repeat hits refresh rather than add durations.
+Settings expose emergence seconds (0 disables it) and
+distraction seconds. Owner preview feedback on 2026-10-04 sets the default and
+minimum distraction to 5 seconds; the preview allows up to 60 seconds. The owner
+also requested shorter flights near the bottom of the foliage. Numeric fields
+now support direct replacement, select-all on first focus/tap, visible ranges,
+deferred validation, previous-value fallback for blanks/invalid entries and decimal
+commas. Flight shape, spin, size and indicator remain subject to preview feedback.
+If there is no squirrel at completion, the mushroom simply
+disappears. On leaving autumn, the future permission hook clears all mushrooms
+without new distractions; existing distractions expire normally.
 
 ## Implementation steps
 
-1. Agree emergence, flight shape, targeting, repeat-hit, and winter-transition rules.
-2. Represent grounded and airborne mushroom states separately; bound spawn locations to playable ground.
-3. Use skin-specific body overlap to launch each mushroom once; later jumping changes vertical overlap.
-4. Animate time-based flight and resolve the nearest valid target at its endpoint.
-5. Give squirrels a separate distraction timer; their existing short animation pause does not stop throws and must not be reused blindly.
-6. Add settings validation and a season-permission hook with spring as the current default; clean all mushrooms on reset.
+1. Represent grounded and airborne states separately, with bounded spawn locations and a grounded cap.
+2. Use each skin's body geometry and swept horizontal contact so fast crossings cannot skip mushrooms.
+3. Animate upward flight, sideways variation and rotation from elapsed flight time.
+4. Resolve the nearest current squirrel at completion, safely handling hawk removals and empty populations.
+5. Keep distraction separate from movement rests and animation pauses. Freeze a fresh throw interval during distraction to avoid queued throws on expiry.
+6. Add validated settings, pause/reset behavior and the autumn permission hook without a season clock.
+7. Run local checks, preview in Codex and incorporate feedback before committing/publishing. For this feature, perform the owner's phone test on Pages after an explicitly authorized merge.
 
 ## Acceptance criteria and verification
 
-The agreed behavior above must hold; the following checks provide evidence.
+Controlled rule tests: emergence 0 disables spawning; the 8-second interval and
+three-grounded cap hold; one contact launches once; flight rises and rotates;
+completion distracts the nearest remaining target; missing/removed targets are
+safe; repeat hits refresh; movement continues; throws resume after a normal
+interval without a burst. Check both skins' contact edges and fast crossings.
+Pause freezes emergence, flight, rotation and distraction; reset cleans up.
+The future season hook enables only autumn and clears mushrooms safely on exit.
 
-Controlled rule tests: spawn rate 0 disables emergence; one contact launches once;
-flight completion distracts the nearest remaining target; missing/removed targets
-are safe; distraction blocks throws and resumes without a burst; reset cleans up.
-Winter gate blocks emergence and applies the agreed transition rule.
-Phone: trigger a mushroom, watch its flight and a visibly distracted squirrel;
-verify colour/scale. After F04, jump over one; after F07, verify winter absence.
+Post-merge phone test on GitHub Pages: start with each skin, wait 8 seconds for emergence, walk through a
+mushroom and check its small grey/brown appearance, rotating upward flight, then
+the nearest squirrel's ellipsis and temporary lack of throws. Check throwing
+returns and movement continues. Pause in flight, wait, resume, then reset. In
+Settings, set emergence to 0 and confirm no mushrooms appear for 16 seconds.
+For easier observation, use a 2-second emergence interval and slower squirrel
+throws, then restore 8 seconds for normal feel. After F04, jump over one; after
+F07, verify autumn-only appearance. A desktop phone viewport is not real-phone evidence.
 
-Run `pnpm test` and `git diff --check`. Keep one required Game smoke test job;
-add focused rule checks to its command only where necessary. Verify deployment
-separately after an explicitly authorized merge.
+Run `pnpm test` and `git diff --check`. Keep the existing required Game smoke test;
+new tests must be included by the test command. Preview locally before commit/PR,
+review the PR before an authorized merge, then verify Pages and real-phone play.
 
 ## Implementation prompt
 
-Copy the following prompt into the implementing agent with this repository open.
-
 ```text
-Implement F03 only after confirming its proposed tuning and unresolved interactions. Add grounded mushrooms, one-shot contact launches, upward randomized short flight, and endpoint-triggered squirrel distraction. Distinguish distraction from existing animation pauses. Add an explicit winter gate without implementing seasons prematurely. Test timing, missing targets, reset, and duplicate contacts; use skin-specific collision geometry.
+Deliver the agreed F03 candidate for PR review. The owner requested rotating upward mushroom flight, 8-second emergence, and autumn-only appearance when seasons are implemented later. For now enable emergence from run start to test functionality. The local preview uses at most three grounded mushrooms, 0.8-second flight near the foliage base, at least 5 seconds of adjustable distraction refreshed by repeat hits, and nearest-current-squirrel targeting. Movement continues during distraction and an ellipsis marks it. Test both skins' contact edges, fast crossings, rotation, timing, removed targets, pause/reset and non-burst throw resumption. Preview in Codex and incorporate feedback before committing or opening a PR. The owner explicitly deferred the real-phone test to GitHub Pages after merge; leave the firewall unchanged. Preserve opening_prompt.md as the owner's untracked reference. Add only the permission hook; do not build seasons or jumping.
 
-Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md, and docs/features/03-mushrooms.md; inspect current main, tests, and open PRs before deciding what remains. Separate agreed requirements from proposed defaults, and resolve only outstanding behavior decisions with the owner before substantial implementation. Work on a focused branch from current main; preserve existing work. Verify the repository-local Git identity and gaucheCamera GitHub account before committing/pushing, without changing global credentials. Do not spawn parallel agents without agreement. Preserve GitHub Pages /cone_catcher/ paths and desktop/portrait-phone play. Use the existing Node test runner and Playwright; run pnpm test and ensure any new tests are actually included by package.json. Add only meaningful behavior/regression tests. Provide a specific real-phone test and let the owner try gameplay before merge. Update this plan and ROADMAP with actual status, PR, test evidence, and limitations; do not mark deployment or phone checks passed without evidence. Open and review a focused PR, wait for its automated checks, fix failures, and stop before merging. Never force-push, publish/reuse the local refactor branch automatically, or implement unrelated roadmap features.
+Read AGENTS.md, docs/ROADMAP.md, docs/WORKFLOW.md and this plan. Inspect current main, working tree and PRs. Preserve existing work and use a focused branch from current main. Verify the repository-local author and gaucheCamera GitHub account before committing/pushing; never change global credentials or identity. Do not spawn parallel agents, reuse the local refactor branch, force-push, or merge without explicit authorization. Keep desktop/portrait-phone play and /cone_catcher/ paths. Use the existing Node test runner and Playwright, meaningful tests only. Update actual status, evidence and limitations with the implementation; never mark phone/deployment verification passed without evidence.
 ```
 
 ## Delivery evidence
 
-- Commit / PR: not started.
-- Automated checks: not run for this feature.
-- Owner phone test: pending implementation.
+- Commit / PR: feature/f03-mushrooms-preview from fetched main 5de7afbe; PR creation pending final checks.
+- Automated checks: pnpm test passed on 2026-10-04 at desktop/phone sizes under /cone_catcher/, including F03 rules and pause/reset/Off checks. git diff --check passed.
+- Local visual preview: ground mushrooms, contact and airborne rotation inspected in Codex; shortened-flight height verified by controlled tests. Revised Settings were inspected with default 5-second distraction and visible ranges. Temporary faster emergence/slower throws were used for observation, then the preview was reloaded to restore all defaults. No browser errors. Owner feedback on final feel remains pending.
+- Owner phone test: explicitly deferred to post-merge GitHub Pages on 2026-10-04. Android Firefox could not reach the Wi-Fi preview after the owner declined the Windows firewall prompt. No firewall changes were made; do not pursue local phone access. Codex phone dimensions are simulated.
 - Deployed Pages check: pending authorized merge/deployment.
-- Amendments: update here when a decision or implementation detail changes.
+- Amendments: owner added rotation, autumn-only future availability, at least 5 seconds of adjustable distraction, easier numeric fields and lower flight height near the foliage base. Latest direction waives Wi-Fi phone preview for this feature and moves the real-phone test to post-merge Pages.
